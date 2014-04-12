@@ -175,8 +175,9 @@ liste* deplacements_possibles(liste* l, int forme){
 }
 
 void composition(plateau* p, int x1, int y1, int x2, int y2){	
-	if(p->cell[y1][x1]->taille + p->cell[y2][x2]->taille <= 3){
-		p->cell[y2][x2]->taille = p->cell[y1][x1]->taille + p->cell[y2][x2]->taille;
+	int a = p->cell[y1][x1]->taille + p->cell[y2][x2]->taille;
+	if(a <= 3){
+		p->cell[y2][x2]->taille = a;
 		p->cell[y2][x2]->forme = p->cell[y1][x1]->forme + p->cell[y2][x2]->forme;
 		p->cell[y1][x1] = NULL;
 	}
