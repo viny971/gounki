@@ -106,9 +106,6 @@ void deplacement(plateau* p, int x1, int y1, int x2, int y2){
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
 	int rep;
-	if(joueur %2 == 0){
-		return 0;
-	}
 	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
 		return 0;
 	}
