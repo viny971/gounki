@@ -1,4 +1,5 @@
 #include "plateau.h"
+#include <math.h>
 
 plateau* init_plateau(){
 	int i,j;
@@ -109,14 +110,59 @@ int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur)
 	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
 		return 0;
 	}
-	else{
+	if(joueur%2 == 0 && y2 < y1) return 0; /*interdit les retours en arrière*/
+	else if(joueur%2 != 0 && y2 > y1) return 0;/*interdit les retours en arrière*/
+	else {
+		switch(p->cell[y1][x1]->forme){
+			case 1:
+				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+				break;
+			case 2:
+				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 2 || fabs(y1-y2) > 2) return 0;
+				break;
+				
+			case 3:
+				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 3 || fabs(y1-y2) > 3) return 0;
+				break;
+			
+			case 4:
+				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 1) return 0;
+				break;
+
+			case 8:
+				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
+				break;
+
+			case 12:
+				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
+				break;
+
+			case 5:
+				if(fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+				break;
+
+			case 9:
+				if(((y2-y1 == 0 || fabs(y2-y1) == 1)  && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && fabs(x1-x2) != 2) || (fabs(y1-y2) > 2)) return 0;
+				break;
+
+			case 6:
+				if(((y1 == y2) && fabs(x1-x2) > 2) || (fabs(y1-y2) == 1 && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && x1 != x2) || (fabs(y1-y2) > 2)) return 0;
+				break;
+
+			default:
+				return 0;
+				break;
+		}
+	}
+	/*else{
 		liste* l = init_liste(x1, y1);
 		l = deplacements_possibles(l, p->cell[y1][x1]->forme);
 		affiche_liste(l);
 		rep = est_present(l, x2, y2);
 		free_liste(l);
 		return rep;
-	}
+	}*/
+	return 1;
 }
 
 liste* deplacements_possibles(liste* l, int forme){
@@ -182,3 +228,10 @@ void composition(plateau* p, int x1, int y1, int x2, int y2){
 		p->cell[y1][x1] = NULL;
 	}
 }
+
+/*void deploiement(plateau* p, char* line) {
+
+	if(line[2] == "#") {
+		switch
+	
+}*/
