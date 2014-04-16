@@ -9,7 +9,7 @@
 #endif /* endif BG_LIGHT */
 
 typedef struct pion{
-/* * Couleur: Vert ou violet
+/* * Couleur: Vert(1) ou violet(0)
    * Taille: 1, 2 ou 3 selon le nombre
    * Forme 
    	* 1: carré 
@@ -22,10 +22,10 @@ typedef struct pion{
 	* 9: carré + rond + rond 
 	* 12: rond + rond + rond 
 */
-	char* couleur; 
+	int couleur; 
 	int taille;
 	int forme; 
 } pion;
 
-pion* init_pion(char* couleur, int forme);
+pion* init_pion(int couleur, int forme);
 void affiche_pion(pion* p);
