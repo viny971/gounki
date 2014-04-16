@@ -16,7 +16,7 @@ int main(){
 		y1 = 7 - trans_coord(line[1]);
 		y2 = 7 - trans_coord(line[4]);
 		free(line);
-		if(!deplacement_possible(p, x1, y1, x2, y2,c)){
+		if(!deplacement_possible(p, x1, y1, x2, y2, c)){
 			printf("Erreur, recommencez:\n");
 			c--;
 		}
