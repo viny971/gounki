@@ -15,8 +15,13 @@ plateau* init_plateau();
 int affiche_plateau(plateau* p);
 void deplacement(plateau* p, int x1, int y1, int x2, int y2);
 int trans_coord(char x);
+<<<<<<< HEAD
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur);
 liste* deplacements_possibles(liste* l, int forme);
+=======
+int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur);
+liste* deplacements_possibles(liste* l, int forme, int joueur);
+>>>>>>> 916f75227657d864d891ca9a43ca1777826ec8c2
 void composition(plateau* p, int x1,  int y1,  int x2,  int y2); 
 
 

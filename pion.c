@@ -1,7 +1,6 @@
-#define _GNU_SOURCE
 #include "pion.h"
 
-pion* init_pion(char* couleur, int forme){
+pion* init_pion(int couleur, int forme){
 	pion* p = malloc(sizeof(pion));
 	p->couleur = couleur;
 	p->forme = forme;
@@ -31,5 +30,5 @@ void affiche_pion(pion* p){
 		case 12:
 			rep = "ooo"; break;
 	}
-	printf("%s%s%s|", p->couleur, rep, DEFAULT_COLOR);
+	printf("%s%s%s|", (p->couleur == 1) ? GREEN : PURPLE, rep, DEFAULT_COLOR);
 }

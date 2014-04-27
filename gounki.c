@@ -15,6 +15,7 @@ int main(){
 		c++;
 		line = NULL;
 		getline(&line, &size, stdin);
+<<<<<<< HEAD
 		printf("%c\n", line[2]);
 		if(line[2] == '+' || line[2] == '*'){
 			if(!deploiement_possible(p,line,c)){
@@ -46,6 +47,20 @@ int main(){
 		    		deplacement(p, x1, y1, x2, y2);
 		    		affiche_plateau(p);
 		  	}
+=======
+		x1 = trans_coord(line[0]);
+		x2 = trans_coord(line[3]);
+		y1 = 7 - trans_coord(line[1]);
+		y2 = 7 - trans_coord(line[4]);
+		free(line);
+		if(!deplacement_possible(p, x1, y1, x2, y2, c)){
+			printf("Erreur, recommencez:\n");
+			c--;
+		}
+		else{
+			deplacement(p, x1, y1, x2, y2);
+			affiche_plateau(p);
+>>>>>>> 916f75227657d864d891ca9a43ca1777826ec8c2
 		}
 	}
 	return 0;	
