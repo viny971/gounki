@@ -1,5 +1,6 @@
 #include "plateau.h"
 #include <math.h>
+#include <string.h>
 
 plateau* init_plateau(){
 	int i,j;
@@ -93,27 +94,14 @@ int trans_coord(char x){
 	return -1;
 }
 
-void deplacement(plateau* p, int x1, int y1, int x2, int y2){
-	printf("%d %d %d %d", x1, y1, x2, y2); 
-	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
-		composition(p,x1,y1,x2,y2);
-	}
-	else{
-		 p->cell[y2][x2] = p->cell[y1][x1];
-	}
-	p->cell[y1][x1] = NULL;
-}
-
-int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
+int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
-	int rep;
-	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
-		return 0;
-	}
+	/*int rep;*/
+	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1) return 0;
 	if(joueur%2 == 0 && y2 < y1) return 0; /*interdit les retours en arrière*/
 	else if(joueur%2 != 0 && y2 > y1) return 0;/*interdit les retours en arrière*/
 	else {
-		switch(p->cell[y1][x1]->forme){
+		switch(forme){
 			case 1:
 				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
 				break;
@@ -220,6 +208,24 @@ liste* deplacements_possibles(liste* l, int forme){
 	return l;
 }
 
+void deplacement(plateau* p, int x1, int y1, int x2, int y2){
+	printf("%d %d %d %d", x1, y1, x2, y2); 
+	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
+		composition(p,x1,y1,x2,y2);
+	}
+	else{
+		 p->cell[y2][x2] = p->cell[y1][x1];
+	}
+	p->cell[y1][x1] = NULL;
+}
+
+void deplacement2(plateau* p, int x1, int y1, int forme, char* couleur) {
+
+	if(p->cell[y1][x1] != NULL) composition2(p,x1,y1,forme);
+	else p->cell[y1][x1] = init_pion(couleur,forme);
+	
+}
+	
 void composition(plateau* p, int x1, int y1, int x2, int y2){	
 	int a = p->cell[y1][x1]->taille + p->cell[y2][x2]->taille;
 	if(a <= 3){
@@ -229,9 +235,330 @@ void composition(plateau* p, int x1, int y1, int x2, int y2){
 	}
 }
 
-/*void deploiement(plateau* p, char* line) {
+void composition2(plateau* p, int x1, int y1, int forme){
 
-	if(line[2] == "#") {
-		switch
+	p->cell[y1][x1]->taille += 1;
+	p->cell[y1][x1]->forme += forme;
+}
+
+int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
+
 	
-}*/
+	if(forme == 1){
+		if((x1 == x2 && x2 != x3) || ((y1 == y2) && ((y2 != y3) || (x3 == x2) || (x3 == x1)))) return 0;
+	}
+	else if(forme == 4){
+		if((x2 == x1 + 1 && x3 != x2 + 1) || (x2 == x1 - 1 && x3 != x2 - 1)) return 0;
+	}
+	return 1;		
+
+}
+
+int deploiement_possible(plateau* p, char* line, int joueur) {
+
+	int x1, y1, x2, y2, x3, y3, x4, y4, tmp, forme;
+	if(strlen(line) < 9 || strlen(line) > 12) return 0;
+	x1 = trans_coord(line[0]);
+	y1 = 7 - trans_coord(line[1]);
+	if(strlen(line) == 9 || strlen(line) == 12) {
+		x2 = trans_coord(line[3]);
+		y2 = 7 - trans_coord(line[4]);
+		x3 = trans_coord(line[6]);
+		y3 = 7 - trans_coord(line[7]);
+	}
+	if(strlen(line) == 12) {
+		x4 = trans_coord(line[9]);
+		y4 = 7 - trans_coord(line[10]);
+	}
+	printf("x1 = %d, y1 = %d, x2 = %d, y2 = %d, x3 = %d, y3 = %d\n", x1,y1,x2,y2,x3,y3);	
+	if(p->cell[y1][x1] == NULL) return 0;
+	else forme = p->cell[y1][x1]->forme;
+
+	printf("forme = %d\n", forme);
+
+	if(line[2] == '+') {
+		printf("coucou 1\n");
+		switch(forme){
+			case 2:
+				printf("coucou 2\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible(p,x2,y2,x3,y3,1,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					printf("coucou 3\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					printf("coucou 4\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 3:
+				printf("coucou 5\n");
+				tmp = meme_sens(x1,y1,x2,y2,x3,y3,1);
+				printf("meme_sens = %d\n", tmp);
+				tmp = meme_sens(x2,y2,x3,y3,x4,y4,1);
+				printf("meme_sens = %d\n", tmp);
+				if(!deplacement_possible(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible(p,x3,y3,x4,y4,1,joueur)
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,1) || !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					printf("coucou 6\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					printf("coucou 7\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y2][x2] != NULL){
+					printf("coucou 8\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				printf("coucou 9\n");	
+				printf("deplacement_possible(p,x1,y1,x2,y2,1,joueur = %d\n", deplacement_possible(p,x1,y1,x2,y2,1,joueur));
+				printf("deplacement_possible(p,x2,y2,x3,y3,2,joueur = %d\n", deplacement_possible(p,x2,y2,x3,y3,4,joueur));
+				if(!deplacement_possible(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible(p,x2,y2,x3,y3,4,joueur)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+
+				break;
+
+			case 6:
+				printf("coucou 10\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible(p,x3,y3,x4,y4,4,joueur)
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 9:
+				printf("coucou 11\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible(p,x3,y3,x4,y4,4,joueur)
+				|| !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+
+	else if(line[2] == '*') {
+		printf("coucou 12\n");
+		switch(forme){
+			case 8:
+				printf("coucou 2\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible(p,x2,y2,x3,y3,4,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					printf("coucou 13\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					printf("coucou 14\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 12:
+				printf("coucou 15\n");
+				printf("meme_sens(x1) = %d\n", meme_sens(x1,y1,x2,y2,x3,y3,4));
+				printf("meme_sens(x2) = %d\n", meme_sens(x2,y2,x3,y3,x4,y4,4));
+				printf("deplacement_possible(x1) = %d\n", deplacement_possible(p,x1,y1,x2,y2,4,joueur));
+				printf("deplacement_possible(x2) = %d\n", deplacement_possible(p,x2,y2,x3,y3,4,joueur));
+				printf("deplacement_possible(x3) = %d\n", deplacement_possible(p,x3,y3,x4,y4,4,joueur));
+				if(!deplacement_possible(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible(p,x3,y3,x4,y4,4,joueur)
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,4) || !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					printf("coucou 16\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					printf("coucou 17\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					printf("coucou 18\n");
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				printf("coucou 19\n");	
+				printf("deplacement_possible(p,x1,y1,x2,y2,4,joueur = %d\n", deplacement_possible(p,x1,y1,x2,y2,4,joueur));
+				printf("deplacement_possible(p,x2,y2,x3,y3,1,joueur = %d\n", deplacement_possible(p,x2,y2,x3,y3,1,joueur));
+				if(!deplacement_possible(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible(p,x2,y2,x3,y3,1,joueur)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+
+				break;
+
+			case 9:
+				printf("coucou 20\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible(p,x3,y3,x4,y4,1,joueur)
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 6:
+				printf("coucou 21\n");
+				if(!deplacement_possible(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible(p,x3,y3,x4,y4,1,joueur)
+				|| !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+	return 1;
+}
+
+
+void deploiement(plateau* p, char* line){
+
+	printf("dans deploiement\n");
+
+	int x1, y1, x2, y2, x3, y3, x4, y4, forme;
+	char* couleur;
+	x1 = trans_coord(line[0]);
+	y1 = 7 - trans_coord(line[1]);
+	forme = p->cell[y1][x1]->forme;
+	couleur = p->cell[y1][x1]->couleur;
+	if(strlen(line) == 9) {
+		x2 = trans_coord(line[3]);
+		y2 = 7 - trans_coord(line[4]);
+		x3 = trans_coord(line[6]);
+		y3 = 7 - trans_coord(line[7]);
+
+		if(line[2] == '+'){
+			if(forme == 2){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+			else if(forme == 5) {
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}		
+		}
+		else if(line[2] == '*'){
+			if(forme == 8){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}
+			else if(forme == 5){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+		}
+	}
+	else if(strlen(line) == 12) {
+		x2 = trans_coord(line[3]);
+		y2 = 7 - trans_coord(line[4]);
+		x3 = trans_coord(line[6]);
+		y3 = 7 - trans_coord(line[7]);
+		x4 = trans_coord(line[9]);
+		y4 = 7 - trans_coord(line[10]);
+
+		if(line[2] == '+'){
+			if(forme == 3){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+		}
+		else if(line[2] == '*'){
+			if(forme == 12){
+				printf("bonjour forme 12\n");
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+		}
+			
+	}
+
+	p->cell[y1][x1] = NULL;
+}
+
+	
+
