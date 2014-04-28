@@ -16,13 +16,13 @@ int affiche_plateau(plateau* p);
 void deplacement(plateau* p, int x1, int y1, int x2, int y2);
 int trans_coord(char x);
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur);
-liste* deplacements_possibles(liste* l, int forme, int joueur);
+void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int joueur);
 void composition(plateau* p, int x1,  int y1,  int x2,  int y2); 
 
 
 liste* init_liste();
 void free_liste(liste* l);
-liste* append(liste* l, int x, int y);
+void append(liste** l, int x, int y);
 int est_present(liste* l, int x, int y);
 liste* concat(liste* l1, liste* l2);
 void affiche_liste(liste* l);
