@@ -18,18 +18,17 @@ void free_liste(liste* l){
 	}
 }
 
-liste* append(liste* l, int x, int y){
+void append(liste** l, int x, int y){
 	liste* l2 = init_liste(x,y);
-	l2->suivant = l;
-	return l2;
+	l2->suivant = *l;
+	*l = l2;
 }
 
 liste* concat(liste* l1, liste* l2){
-	liste* l = l1;
-	while(l->suivant != NULL){
-		l = l->suivant;
+	while(l1->suivant != NULL){
+		l1 = l1->suivant;
 	}
-	l->suivant = l2;
+	l1->suivant = l2;
 	return l1;
 }
 

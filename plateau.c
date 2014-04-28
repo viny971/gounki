@@ -5,14 +5,14 @@ plateau* init_plateau(){
 	int i,j;
 	plateau* plateau = malloc(sizeof(pion*) * 8 * 8);
 	for(j=0 ; j < 8 ; j += 2){
-		plateau->cell[0][j] = init_pion(1,1);
-		plateau->cell[0][j+1] = init_pion(1,4);
-		plateau->cell[1][j+1] = init_pion(1,1);
-		plateau->cell[1][j] = init_pion(1,4);
-		plateau->cell[6][j] = init_pion(0,1);
-		plateau->cell[6][j+1] = init_pion(0,4);
-		plateau->cell[7][j+1] = init_pion(0,1);
-		plateau->cell[7][j] = init_pion(0,4);
+		plateau->cell[0][j] = init_pion(1,4);
+		plateau->cell[0][j+1] = init_pion(1,1);
+		plateau->cell[1][j+1] = init_pion(1,4);
+		plateau->cell[1][j] = init_pion(1,1);
+		plateau->cell[6][j] = init_pion(0,4);
+		plateau->cell[6][j+1] = init_pion(0,1);
+		plateau->cell[7][j+1] = init_pion(0,4);
+		plateau->cell[7][j] = init_pion(0,1);
 	}
 	for(i = 2 ; i < 6 ; i++){
 		for(j = 0 ; j < 8 ; j++){
@@ -94,7 +94,6 @@ int trans_coord(char x){
 }
 
 void deplacement(plateau* p, int x1, int y1, int x2, int y2){
-	printf("%d %d %d %d", x1, y1, x2, y2); 
 	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
 		composition(p,x1,y1,x2,y2);
 	}
@@ -107,143 +106,106 @@ void deplacement(plateau* p, int x1, int y1, int x2, int y2){
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
 	int rep;
+	/* si la case de départ est vide */
 	if(p->cell[y1][x1] == NULL){
 		return 0;
 	}
+	/* si un des deux cases entrée n'est pas valide */
 	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
 		return 0;
 	}
+	/* si la case de départ est la même que la case d'arrivée */
 	if(x1 == x2 && y1 == y2){
 		return 0;
 	}
+	/* vérifie que c'est bien un pion appartenant au joueur qui a joué */
 	if(p->cell[y1][x1]->couleur == joueur % 2){
 		return 0;
 	}
-	/*interdiction des retours en arrière
-	if(joueur % 2 == 0 && y2 < y1) return 0; 
-	else if(joueur % 2 != 0 && y2 > y1) return 0;
-	else {
-		switch(p->cell[y1][x1]->forme){
-			case 1:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
-				break;
-			case 2:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 2 || fabs(y1-y2) > 2) return 0;
-				break;
-				
-			case 3:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 3 || fabs(y1-y2) > 3) return 0;
-				break;
-			
-			case 4:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 1) return 0;
-				break;
-
-			case 8:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
-				break;
-
-			case 12:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
-				break;
-
-			case 5:
-				if(fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
-				break;
-
-			case 9:
-				if(((y2-y1 == 0 || fabs(y2-y1) == 1)  && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && fabs(x1-x2) != 2) || (fabs(y1-y2) > 2)) return 0;
-				break;
-
-			case 6:
-				if(((y1 == y2) && fabs(x1-x2) > 2) || (fabs(y1-y2) == 1 && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && x1 != x2) || (fabs(y1-y2) > 2)) return 0;
-				break;
-
-			default:
-				return 0;
-				break;
-		}
-	}*/
 	else{
 		liste* l = init_liste(x1, y1);
-		l = deplacements_possibles(l, p->cell[y1][x1]->forme, joueur);
+		liste* l2 = init_liste(x1, y1);
+		deplacements_possibles(p, &l, &l2, p->cell[y1][x1]->forme, joueur);
 		rep = est_present(l, x2, y2);
+		if(rep != 1){
+			rep = est_present(l2, x2, y2);
+		}
 		free_liste(l);
 		return rep;
 	}
 	return 1;
 }
 
-liste* deplacements_possibles(liste* l, int forme, int joueur){
+void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int joueur){
 /* retourne la liste des positions parcourables par la pièce */
-	liste* i = l;
+	liste* i = *l;
 	for(; i != NULL ; i = i->suivant){
 		switch(forme){
 			case 1:
 				if(joueur % 2 == 0){
-					l = append(l, i->x, i->y + 1);
-					l = append(l, i->x + 1, i->y);
-					l = append(l, i->x - 1, i->y);
+					append(l, i->x, i->y + 1);
+					append(l, i->x + 1, i->y);
+					append(l, i->x - 1, i->y);
 				}
 				else{
-					l = append(l, i->x, i->y - 1);
-					l = append(l, i->x + 1, i->y);
-					l = append(l, i->x - 1, i->y);
+					append(l, i->x, i->y - 1);
+					append(l, i->x + 1, i->y);
+					append(l, i->x - 1, i->y);
 				}
 				break;
 
 			case 2:
-				l = deplacements_possibles(l, 1, joueur);
-				l = deplacements_possibles(l, 1, joueur);
+				deplacements_possibles(p, l, l2, 1, joueur);
+				deplacements_possibles(p, l, l2, 1, joueur);
 				break;
 
 			case 3:
-				l = deplacements_possibles(l, 2, joueur);
-				l = deplacements_possibles(l, 1, joueur);
+				deplacements_possibles(p, l, l2, 2, joueur);
+				deplacements_possibles(p, l, l2, 1, joueur);
 				break;
 
 			case 4:
 				if(joueur % 2 == 0){
-					l = append(l, i->x + 1, i->y + 1);
-					l = append(l, i->x - 1, i->y + 1);
+					append(l, i->x + 1, i->y + 1);
+					append(l, i->x - 1, i->y + 1);
 				}
 				else{
-					l = append(l, i->x + 1, i->y - 1);
-					l = append(l, i->x - 1, i->y - 1);
+					append(l, i->x + 1, i->y - 1);
+					append(l, i->x - 1, i->y - 1);
 				}
 				break;
 
 			case 5:
-				l = deplacements_possibles(l, 1, joueur);
-				l = deplacements_possibles(l, 4, joueur);
+				deplacements_possibles(p, l, l2, 1, joueur); 
+				deplacements_possibles(p, l2, l, 4, joueur);
 				break;
 
 			case 6:
-				l = deplacements_possibles(l, 2, joueur);
-				l = deplacements_possibles(l, 4, joueur);
+				deplacements_possibles(p, l, l2, 2, joueur);
+				deplacements_possibles(p, l2, l, 4, joueur);
 				break;
 
 			case 8:
-				l = deplacements_possibles(l, 4, joueur);
-				l = deplacements_possibles(l, 4, joueur);
+				deplacements_possibles(p, l, l2, 4, joueur);
+				deplacements_possibles(p, l, l2, 4, joueur);
 				break;
 
 			case 9:
-				l = deplacements_possibles(l, 1, joueur);
-				l = deplacements_possibles(l, 8, joueur);
+				deplacements_possibles(p, l, l2, 1, joueur);
+				deplacements_possibles(p, l2, l, 8, joueur);
 				break;
 
 			case 12:
-				l = deplacements_possibles(l, 4, joueur);
-				l = deplacements_possibles(l, 8, joueur);
+				deplacements_possibles(p, l, l2, 4, joueur);
+				deplacements_possibles(p, l, l2, 8, joueur);
 				break;
 		}
 	}
-	return l;
 }
 
 void composition(plateau* p, int x1, int y1, int x2, int y2){	
-	int a = p->cell[y1][x1]->taille + p->cell[y2][x2]->taille;
+/* fonction de composition de deux pions d'une même couleur */
+	int a = p->cell[y2][x1]->taille + p->cell[y2][x2]->taille;
 	if(a <= 3){
 		p->cell[y2][x2]->taille = a;
 		p->cell[y2][x2]->forme = p->cell[y1][x1]->forme + p->cell[y2][x2]->forme;
@@ -251,9 +213,3 @@ void composition(plateau* p, int x1, int y1, int x2, int y2){
 	}
 }
 
-/*void deploiement(plateau* p, char* line) {
-
-	if(line[2] == "#") {
-		switch
-	
-}*/
