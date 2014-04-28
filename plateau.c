@@ -1,5 +1,4 @@
 #include "plateau.h"
-#include <math.h>
 
 plateau* init_plateau(){
 	int i,j;
@@ -91,16 +90,6 @@ int trans_coord(char x){
 			return -1; break;
 	}
 	return -1;
-}
-
-void deplacement(plateau* p, int x1, int y1, int x2, int y2){
-	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
-		composition(p,x1,y1,x2,y2);
-	}
-	else{
-		 p->cell[y2][x2] = p->cell[y1][x1];
-	}
-	p->cell[y1][x1] = NULL;
 }
 
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
@@ -203,6 +192,25 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int jo
 	}
 }
 
+void deplacement(plateau* p, int x1, int y1, int x2, int y2){
+	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
+		composition(p,x1,y1,x2,y2);
+	}
+	else{
+		 p->cell[y2][x2] = p->cell[y1][x1];
+	}
+	p->cell[y1][x1] = NULL;
+}
+
+void deplacement2(plateau* p, int x1, int y1, int forme, int couleur) {
+	if(p->cell[y1][x1] != NULL){
+		composition2(p,x1,y1,forme);
+	}
+	else{
+		p->cell[y1][x1] = init_pion(couleur,forme);
+	}
+}
+
 void composition(plateau* p, int x1, int y1, int x2, int y2){	
 /* fonction de composition de deux pions d'une même couleur */
 	int a = p->cell[y2][x1]->taille + p->cell[y2][x2]->taille;
@@ -213,3 +221,314 @@ void composition(plateau* p, int x1, int y1, int x2, int y2){
 	}
 }
 
+void composition2(plateau* p, int x1, int y1, int forme){
+	p->cell[y1][x1]->taille += 1;
+	p->cell[y1][x1]->forme += forme;
+}
+
+int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
+	if(forme == 1){
+		if((x1 == x2 && x2 != x3) || ((y1 == y2) && ((y2 != y3) || (x3 == x2) || (x3 == x1)))) return 0;
+	}
+	else if(forme == 4){
+		if((x2 == x1 + 1 && x3 != x2 + 1) || (x2 == x1 - 1 && x3 != x2 - 1)) return 0;
+	}
+	return 1;		
+}
+
+int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
+	int forme;
+
+	if(p->cell[y1][x1] == NULL) return 0;
+	else forme = p->cell[y1][x1]->forme;
+
+	if(type == 1) {
+		switch(forme){
+			case 2:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur)
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,1)){
+						return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur){
+						return 0;
+					}
+					if(p->cell[y2][x2]->taille + 1 > 2){
+						return 0;
+					}
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur){
+						return 0;
+					}
+					if(p->cell[y3][x3]->taille + 1 > 2){
+						return 0;
+					}
+				}
+				break;
+
+			case 3:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,1) 
+					|| !meme_sens(x2,y2,x3,y3,x4,y4,1)){
+						return 0;	
+				}
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+			
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 6:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,1)){
+						return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 9:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
+						return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+
+	else if(type == 2){
+		switch(forme){
+			case 8:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+				|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
+					return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 12:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+				|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+				|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				|| !meme_sens(x1,y1,x2,y2,x3,y3,4) 
+				|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
+					return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+				
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 9:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
+						return 0;
+				}
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 6:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x2,y2,x3,y3,x4,y4,1)){
+						return 0;
+				}
+
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+	return 1;
+}
+
+
+void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_line, int type) {
+	int forme, couleur;
+
+	forme = p->cell[y1][x1]->forme;
+	couleur = p->cell[y1][x1]->couleur;
+
+	if(str_line == 9) {
+		if(type == 1){
+			if(forme == 2){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+			else if(forme == 5) {
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}		
+		}
+		else if(type == 2){
+			if(forme == 8){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}
+			else if(forme == 5){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+		}
+	}
+	else if(str_line == 12) {
+		if(type == 1){
+			if(forme == 3){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+		}
+		else if(type == 2){
+			if(forme == 12){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+		}
+
+	}
+	p->cell[y1][x1] = NULL;
+}
