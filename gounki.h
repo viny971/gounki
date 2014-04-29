@@ -6,8 +6,8 @@
 #define OPTION_JOUEURNOIR_ROBOT   2
 
 /* Déclaration des noms des joueurs */
-static char* joueur_blanc = " 1";
-static char* joueur_noir  = " 2";
+static char* joueur_blanc = "Player 1";
+static char* joueur_noir  = "Player 2";
 
 int read_options(int argc, char* argv[]);
 /*	Fonction qui permet de lire les options entrées au lancement

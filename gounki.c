@@ -58,10 +58,16 @@ int read_options(int argc, char* argv[]){
 
 int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int* y4, int* type, int* size_line){
 	char* line = NULL;
+	int eof_test;
 	size_t size;
 
 	/* lecture de la ligne */
-	getline(&line, &size, stdin);
+	eof_test = getline(&line, &size, stdin);
+
+	/* test de fin de fichier */
+	if(eof_test == -1){
+		return -1;
+	}
 
 	/* retourne 2 si c'est un déploiement */
 	if(line[2] == '+' || line[2] == '*'){
@@ -120,10 +126,10 @@ int game_loop(){
 
 	/* initialisation puis affichage du plateau de jeu */
 	plateau* p = init_plateau();
-	affiche_plateau(p);
+	affiche_plateau(p,0);
 
 	while(1){
-		printf("Au tour du %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 		c++;
 
 		action = read_line(&x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4, &type, &size);
@@ -142,7 +148,7 @@ int game_loop(){
 				}
 				else{
 					deplacement(p, x1, y1, x2, y2);
-					affiche_plateau(p);
+					affiche_plateau(p,c);
 				}
 				break;
 			/* cas 2: déploiement */
@@ -153,11 +159,12 @@ int game_loop(){
 				}
 				else{
 					deploiement_possible(p,x1, y1, x2, y2, x3, y3, x4, y4, type, size);
-					affiche_plateau(p);	    
+					affiche_plateau(p,c);	    
 				}
 				break;
 			/* cas 3: victoire (manque fonction de détection de victoire */
 			case 3:
+			case -1:
 				printf("\nFin de partie !\n");
 				return 0;
 		}
@@ -173,10 +180,8 @@ int main(int argc, char* argv[]){
 	if(options & (1 << OPTION_TEST)){
 	}
 
+	/* lancement d'une partie */
 	rep = game_loop();
-	if(!rep){
-		return 0;
-	}
-
-	return 0;
+	
+	return rep;
 }

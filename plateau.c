@@ -21,11 +21,15 @@ plateau* init_plateau(){
 	return plateau;
 }
 
-int affiche_plateau(plateau* p){
+int affiche_plateau(plateau* p, int tour){
 	int i,j;
-	printf("\n    A   B   C   D   E   F   G   H");
+	printf("\n                    ______________________________________");
+	printf("\n                                Partie de Gounki          ");
+	printf("\n                                 Tour numéro %d           ", tour);
+	printf("\n                    ______________________________________");
+	printf("\n                        A   B   C   D   E   F   G   H");
 	for(i = 0 ; i < 8 ; i++){
-		printf("\n %d|", 8-i);
+		printf("\n                    %d |", 8-i);
 		for(j = 0 ; j < 8 ; j++){
 			if(p->cell[i][j] == NULL){
 				printf("   |");
@@ -34,12 +38,13 @@ int affiche_plateau(plateau* p){
 				affiche_pion(p->cell[i][j]);
 			}
 		}
-		printf("%d", 8-i);
+		printf(" %d", 8-i);
 		if(i!=7){
-			printf("\n   _______________________________");
+			printf("\n                       _______________________________");
 		}
 	}
-	printf("\n    A   B   C   D   E   F   G   H\n\n");
+	printf("\n                        A   B   C   D   E   F   G   H");
+	printf("\n                    ______________________________________\n\n");
 	return 0;
 }
 
@@ -114,7 +119,7 @@ int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur)
 	else{
 		liste* l = init_liste(x1, y1);
 		liste* l2 = init_liste(x1, y1);
-		deplacements_possibles(p, &l, &l2, p->cell[y1][x1]->forme, joueur);
+		deplacements_possibles(p, &l, &l2, p->cell[y1][x1]->forme, x2, y2, joueur);
 		rep = est_present(l, x2, y2);
 		if(rep != 1){
 			rep = est_present(l2, x2, y2);
@@ -125,68 +130,88 @@ int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur)
 	return 1;
 }
 
-void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int joueur){
+void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
 /* retourne la liste des positions parcourables par la pièce */
 	liste* i = *l;
 	for(; i != NULL ; i = i->suivant){
 		switch(forme){
 			case 1:
 				if(joueur % 2 == 0){
-					append(l, i->x, i->y + 1);
-					append(l, i->x + 1, i->y);
-					append(l, i->x - 1, i->y);
+					if((p->cell[(i->y)+1][i->x] == NULL) || (p->cell[i->y][i->x]->couleur == ((joueur + 1) % 2) && x2 == i->x && y2 == (i->y) + 1)){
+						append(l, i->x, (i->y) + 1);
+					}
+					if((p->cell[i->y][(i->x)+1] == NULL) || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == i->y)){
+						append(l, (i->x) + 1, i->y);
+					}
+					if((p->cell[i->y][(i->x)-1] == NULL) || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == i->y)){
+						append(l, (i->x) - 1, i->y);
+					}
 				}
 				else{
-					append(l, i->x, i->y - 1);
-					append(l, i->x + 1, i->y);
-					append(l, i->x - 1, i->y);
+					if((p->cell[(i->y)-1][i->x] == NULL) || (p->cell[(i->y)-1][i->x]->couleur == ((joueur + 1) % 2) && x2 == i->x && y2 == (i->y) - 1)){
+						append(l, i->x, (i->y) - 1);
+					}
+					if((p->cell[i->y][(i->x)+1] == NULL) || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == i->y)){
+						append(l, (i->x) + 1, i->y);
+					}
+					if((p->cell[i->y][(i->x)-1] == NULL) || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == i->y)){
+						append(l, (i->x) - 1, i->y);
+					}
 				}
 				break;
 
 			case 2:
-				deplacements_possibles(p, l, l2, 1, joueur);
-				deplacements_possibles(p, l, l2, 1, joueur);
+				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
+				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
 				break;
 
 			case 3:
-				deplacements_possibles(p, l, l2, 2, joueur);
-				deplacements_possibles(p, l, l2, 1, joueur);
+				deplacements_possibles(p, l, l2, 2, x2, y2, joueur);
+				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
 				break;
 
 			case 4:
 				if(joueur % 2 == 0){
-					append(l, i->x + 1, i->y + 1);
-					append(l, i->x - 1, i->y + 1);
+					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || (p->cell[(i->y)+1][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == (i->y) + 1)){
+						append(l, (i->x) + 1, (i->y) + 1);
+					}
+					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || (p->cell[(i->y)+1][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == (i->y) + 1)){
+						append(l, (i->x) - 1, (i->y) + 1);
+					}
 				}
 				else{
-					append(l, i->x + 1, i->y - 1);
-					append(l, i->x - 1, i->y - 1);
+					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || (p->cell[(i->y)-1][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == (i->y) - 1)){
+						append(l, i->x + 1, i->y - 1);
+					}
+					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || (p->cell[(i->y)-1][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == (i->y) - 1)){
+						append(l, i->x - 1, i->y - 1);
+					}
 				}
 				break;
 
 			case 5:
-				deplacements_possibles(p, l, l2, 1, joueur); 
-				deplacements_possibles(p, l2, l, 4, joueur);
+				deplacements_possibles(p, l, l2, 1, x2, y2, joueur); 
+				deplacements_possibles(p, l2, l, 4, x2, y2, joueur);
 				break;
 
 			case 6:
-				deplacements_possibles(p, l, l2, 2, joueur);
-				deplacements_possibles(p, l2, l, 4, joueur);
+				deplacements_possibles(p, l, l2, 2, x2, y2, joueur);
+				deplacements_possibles(p, l2, l, 4, x2, y2, joueur);
 				break;
 
 			case 8:
-				deplacements_possibles(p, l, l2, 4, joueur);
-				deplacements_possibles(p, l, l2, 4, joueur);
+				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
+				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
 				break;
 
 			case 9:
-				deplacements_possibles(p, l, l2, 1, joueur);
-				deplacements_possibles(p, l2, l, 8, joueur);
+				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
+				deplacements_possibles(p, l2, l, 8, x2, y2, joueur);
 				break;
 
 			case 12:
-				deplacements_possibles(p, l, l2, 4, joueur);
-				deplacements_possibles(p, l, l2, 8, joueur);
+				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
+				deplacements_possibles(p, l, l2, 8, x2, y2, joueur);
 				break;
 		}
 	}

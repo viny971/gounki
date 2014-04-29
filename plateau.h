@@ -13,7 +13,7 @@ typedef struct liste{
 
 /* fonction relatives au plateau et à ses règles */
 plateau* init_plateau();
-int affiche_plateau(plateau* p);
+int affiche_plateau(plateau* p, int tour);
 
 void deplacement(plateau* p, int x1, int y1, int x2, int y2);
 void deplacement2(plateau* p, int x1, int y1, int forme, int couleur);
@@ -21,7 +21,7 @@ void deplacement2(plateau* p, int x1, int y1, int forme, int couleur);
 int trans_coord(char x);
 
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur);
-void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int joueur);
+void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur);
 
 void composition(plateau* p, int x1,  int y1,  int x2,  int y2); 
 void composition2(plateau* p, int x1, int y1, int forme);
