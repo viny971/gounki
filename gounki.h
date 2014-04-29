@@ -13,3 +13,5 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 	int* size_line: longueur de la ligne
 	return: int: 1 pour déplacement, 2 pour déploiement, 3 pour victoire */
 
+int game_loop(plateau* p);
+/* Fonction qui lance une boucle qui déroule le jeu */

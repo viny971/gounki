@@ -75,8 +75,9 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 	return 0;
 }
 
-void game_loop(){
+int game_loop(plateau* p){
 	int  x1, y1, x2, y2, x3, y3, x4, y4, type, size, c = 0, action;
+
 	while(1){
 		printf("Au tour du %sjoueur %d%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2) + 1, DEFAULT_COLOR);
 		c++;
@@ -121,9 +122,15 @@ void game_loop(){
 }
 
 int main(int argc, char* argv[]){
+	int rep;
 	/* initialisation puis affichage du plateau de jeu */
 	plateau* p = init_plateau();
 	affiche_plateau(p);
+
+	rep = game_loop(p);
+	if(!rep){
+		return 0;
+	}
 
 	return 0;
 }
