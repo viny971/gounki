@@ -1,19 +1,59 @@
 #include "gounki.h"
 
-void read_option(int argc, char* argv[]){
-	int i;
+int read_options(int argc, char* argv[]){
+	int i, options = 0;
 	/* si il n'y a pas d'option, la fonction return*/
 	if(argc <= 1){
-		return;
+		return options;
 	}
 	else{ 
 		for(i=1 ; i < argc ; i++){
 			/* recherche du mode test */
 			if(!strcmp(argv[i],"-t")){
-				
+				options |= 1 << OPTION_TEST;
+			}
+
+			/* recherche du joueur blanc*/
+			if(!strcmp(argv[i],"-B")){
+
+				/* détermine robot ou humain */
+				if((i+1) < argc && !strcmp(argv[i+1],"humain")){
+
+					/* possibilité de personnaliser le nom */
+					if((i+2) < argc && argv[i+2][0] != '-'){
+						joueur_blanc = argv[i+2];	
+					}
+				}
+				else{
+					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
+						options |= 1 << OPTION_JOUEURBLANC_ROBOT;
+						/* change le nom en robot */
+						joueur_blanc = "robot";	
+					}
+				}
+			}
+		
+			/* recherche du joueur noir*/
+			if(!strcmp(argv[i],"-N")){
+				/* détermine robot ou humain */
+				if((i+1) < argc && !strcmp(argv[i+1],"humain")){
+					/* possibilité de personnaliser le nom */
+					if((i+2) < argc && argv[i+2][0] != '-'){
+						joueur_noir = argv[i+2];	
+					}
+				}
+				else{
+					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
+						options |= 1 << OPTION_JOUEURNOIR_ROBOT;
+						/* change le nom en robot */
+						joueur_noir = "robot";	
+					}
+				}
 			}
 		}
+		return options;
 	}
+	return options;
 }
 
 int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int* y4, int* type, int* size_line){
@@ -75,11 +115,15 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 	return 0;
 }
 
-int game_loop(plateau* p){
+int game_loop(){
 	int  x1, y1, x2, y2, x3, y3, x4, y4, type, size, c = 0, action;
 
+	/* initialisation puis affichage du plateau de jeu */
+	plateau* p = init_plateau();
+	affiche_plateau(p);
+
 	while(1){
-		printf("Au tour du %sjoueur %d%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2) + 1, DEFAULT_COLOR);
+		printf("Au tour du %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 		c++;
 
 		action = read_line(&x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4, &type, &size);
@@ -122,12 +166,14 @@ int game_loop(plateau* p){
 }
 
 int main(int argc, char* argv[]){
-	int rep;
-	/* initialisation puis affichage du plateau de jeu */
-	plateau* p = init_plateau();
-	affiche_plateau(p);
+	int rep, options;
 
-	rep = game_loop(p);
+	/* lecture des options */
+	options = read_options(argc, argv);
+	if(options & (1 << OPTION_TEST)){
+	}
+
+	rep = game_loop();
 	if(!rep){
 		return 0;
 	}
