@@ -277,12 +277,8 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				}
 
 				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur){
-						return 0;
-					}
-					if(p->cell[y2][x2]->taille + 1 > 2){
-						return 0;
-					}
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
 				}
 
 				if(p->cell[y3][x3] != NULL){
@@ -383,9 +379,9 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 		switch(forme){
 			case 8:
 				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-				|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-				|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
-					return 0;
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
+						return 0;
 				}
 
 				if(p->cell[y2][x2] != NULL){
@@ -401,11 +397,11 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 
 			case 12:
 				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-				|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-				|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-				|| !meme_sens(x1,y1,x2,y2,x3,y3,4) 
-				|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
-					return 0;
+					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
+					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
+					|| !meme_sens(x1,y1,x2,y2,x3,y3,4) 
+					|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
+						return 0;
 				}
 
 				if(p->cell[y2][x2] != NULL){
@@ -425,6 +421,9 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 5:
+				if(p->cell[y2][x2] == NULL){
+					fprintf(stdout, "coucou");
+				}
 				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
 				
 				if(p->cell[y2][x2] != NULL){
@@ -497,7 +496,7 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 	couleur = p->cell[y1][x1]->couleur;
 
 	if(str_line == 9) {
-		if(type == 1){
+		if(type == 2){
 			if(forme == 2){
 				deplacement2(p,x2,y2,1,couleur);
 				deplacement2(p,x3,y3,1,couleur);
@@ -507,7 +506,7 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 				deplacement2(p,x3,y3,4,couleur);
 			}		
 		}
-		else if(type == 2){
+		else if(type == 1){
 			if(forme == 8){
 				deplacement2(p,x2,y2,4,couleur);
 				deplacement2(p,x3,y3,4,couleur);
@@ -519,7 +518,7 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 		}
 	}
 	else if(str_line == 12) {
-		if(type == 1){
+		if(type == 2){
 			if(forme == 3){
 				deplacement2(p,x2,y2,1,couleur);
 				deplacement2(p,x3,y3,1,couleur);
@@ -536,7 +535,7 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 				deplacement2(p,x4,y4,4,couleur);
 			}
 		}
-		else if(type == 2){
+		else if(type == 1){
 			if(forme == 12){
 				deplacement2(p,x2,y2,4,couleur);
 				deplacement2(p,x3,y3,4,couleur);

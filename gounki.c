@@ -58,14 +58,14 @@ int read_options(int argc, char* argv[]){
 
 int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int* y4, int* type, int* size_line){
 	char* line = NULL;
-	int eof_test;
+	int length;
 	size_t size;
 
 	/* lecture de la ligne */
-	eof_test = getline(&line, &size, stdin);
+	length = getline(&line, &size, stdin);
 
 	/* test de fin de fichier */
-	if(eof_test == -1){
+	if(length == -1){
 		return -1;
 	}
 
@@ -73,32 +73,32 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 	if(line[2] == '+' || line[2] == '*'){
 
 		/* si la commande entrée est trop courte ou trop longue */
-		if(size < 9 || size > 12){
+		if(length < 9 || length > 12){
 			return 0;
 		}
 		/* transformation des coordonées */
 		*x1 = trans_coord(line[0]);
 		*y1 = 7 - trans_coord(line[1]);
 		
-		if(size == 9 || size == 12) {
+		if(length == 9 || length == 12) {
 			*x2 = trans_coord(line[3]);
 			*y2 = 7 - trans_coord(line[4]);
 			*x3 = trans_coord(line[6]);
 			*y3 = 7 - trans_coord(line[7]);
 		}
-		if(size == 12) {
+		if(length == 12) {
 			*x4 = trans_coord(line[9]);
 			*y4 = 7 - trans_coord(line[10]);
 		}
 		/* enregistrement du type de déploiement */
 		if(line[2] == '+'){
-			*type = 1;
-		}
-		else{
 			*type = 2;
 		}
+		else{
+			*type = 1;
+		}
 		/* entrée de la longueur de la ligne */
-		*size_line = size;
+		*size_line = length;
 		free(line);
 		return 2;
 	}
@@ -158,7 +158,8 @@ int game_loop(){
 					c--;
 				}
 				else{
-					deploiement_possible(p,x1, y1, x2, y2, x3, y3, x4, y4, type, size);
+	fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, size: %d, type: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, size, type);
+					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);
 					affiche_plateau(p,c);	    
 				}
 				break;
