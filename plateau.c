@@ -125,6 +125,7 @@ int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur)
 			rep = est_present(l2, x2, y2);
 		}
 		free_liste(l);
+		free_liste(l2);
 		return rep;
 	}
 	return 1;
@@ -172,19 +173,19 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 
 			case 4:
 				if(joueur % 2 == 0){
-					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || (p->cell[(i->y)+1][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == (i->y) + 1)){
+					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || ((p->cell[(i->y)+1][(i->x)+1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) + 1) && (y2 == (i->y) + 1))){
 						append(l, (i->x) + 1, (i->y) + 1);
 					}
-					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || (p->cell[(i->y)+1][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == (i->y) + 1)){
+					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || ((p->cell[(i->y)+1][(i->x)-1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) - 1) && (y2 == (i->y) + 1))){
 						append(l, (i->x) - 1, (i->y) + 1);
 					}
 				}
 				else{
-					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || (p->cell[(i->y)-1][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == (i->y) - 1)){
-						append(l, i->x + 1, i->y - 1);
+					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || ((p->cell[(i->y)-1][(i->x)+1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) + 1) && (y2 == (i->y) - 1))){
+						append(l, (i->x) + 1, (i->y) - 1);
 					}
-					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || (p->cell[(i->y)-1][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == (i->y) - 1)){
-						append(l, i->x - 1, i->y - 1);
+					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || ((p->cell[(i->y)-1][(i->x)-1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) - 1) && (y2 == (i->y) - 1))){
+						append(l, (i->x) - 1, (i->y) - 1);
 					}
 				}
 				break;
@@ -238,7 +239,12 @@ void deplacement2(plateau* p, int x1, int y1, int forme, int couleur) {
 
 void composition(plateau* p, int x1, int y1, int x2, int y2){	
 /* fonction de composition de deux pions d'une même couleur */
-	int a = p->cell[y2][x1]->taille + p->cell[y2][x2]->taille;
+	int a;
+
+	if(p->cell[y1][x1] == NULL || p->cell[y2][x2] == NULL){
+		fprintf(stdout, "Erreur mon gars");
+	}
+	a = p->cell[y1][x1]->taille + p->cell[y2][x2]->taille;
 	if(a <= 3){
 		p->cell[y2][x2]->taille = a;
 		p->cell[y2][x2]->forme = p->cell[y1][x1]->forme + p->cell[y2][x2]->forme;
@@ -261,13 +267,13 @@ int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
 	return 1;		
 }
 
-int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
+/*int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
 	int forme;
 
 	if(p->cell[y1][x1] == NULL) return 0;
 	else forme = p->cell[y1][x1]->forme;
 
-	if(type == 1) {
+	if(type == 2) {
 		switch(forme){
 			case 2:
 				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
@@ -375,7 +381,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 		}	
 	}
 
-	else if(type == 2){
+	else if(type == 1){
 		switch(forme){
 			case 8:
 				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
@@ -555,4 +561,174 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 
 	}
 	p->cell[y1][x1] = NULL;
+}*/
+
+int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
+
+	int forme;
+	fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, type: %d, joueur: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, type, joueur);
+
+	if(p->cell[y1][x1] == NULL) return 0;
+	else forme = p->cell[y1][x1]->forme;
+
+
+	if(type == 1) {
+		switch(forme){
+			case 2:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 3:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x1,y1,x2,y2,x3,y3,1) || !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 6:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 9:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+
+	else if(type == 2) {
+		switch(forme){
+			case 8:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 12:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x1,y1,x2,y2,x3,y3,4) || !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 5:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+
+				break;
+
+			case 9:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+
+			case 6:
+				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+						|| !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
+				if(p->cell[y2][x2] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y3][x3] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+				}
+				if(p->cell[y4][x4] != NULL){
+					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+				}
+				break;
+		}	
+	}
+	return 1;
 }

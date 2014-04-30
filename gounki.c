@@ -92,10 +92,10 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 		}
 		/* enregistrement du type de déploiement */
 		if(line[2] == '+'){
-			*type = 2;
+			*type = 1;
 		}
 		else{
-			*type = 1;
+			*type = 2;
 		}
 		/* entrée de la longueur de la ligne */
 		*size_line = length;
@@ -158,8 +158,9 @@ int game_loop(){
 					c--;
 				}
 				else{
-	fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, size: %d, type: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, size, type);
-					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);
+					/*fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, size: %d, type: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, size, type);
+					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);*/
+					fprintf(stdout, "Deplacement possible");
 					affiche_plateau(p,c);	    
 				}
 				break;
