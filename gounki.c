@@ -135,7 +135,7 @@ int game_loop(){
 		action = read_line(&x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4, &type, &size);
 
 		if(!action){
-			printf("Erreur, recommencez.\n");
+			printf("Erreur, recommencez. 1\n");
 			c--;
 		}
 
@@ -143,7 +143,7 @@ int game_loop(){
 			/* cas 1: déplacement standard */
 			case 1:
 				if(!deplacement_possible(p, x1, y1, x2, y2, c)){
-					printf("Erreur, recommencez.\n");
+					printf("Erreur, recommencez. 2\n");
 					c--;
 				}
 				else{
@@ -160,17 +160,18 @@ int game_loop(){
 				else{
 					/*fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, size: %d, type: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, size, type);
 					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);*/
-					fprintf(stdout, "Deplacement possible");
+					fprintf(stdout, "Deploiement possible");
 					affiche_plateau(p,c);	    
 				}
 				break;
-			/* cas 3: victoire (manque fonction de détection de victoire */
+			/* cas 3: victoire (manque fonction de détection de victoire) */
 			case 3:
 			case -1:
 				printf("\nFin de partie !\n");
 				return 0;
 		}
 	}
+	free_plateau(p);
 	return 0;	
 }
 

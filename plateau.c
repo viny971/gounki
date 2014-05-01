@@ -21,6 +21,18 @@ plateau* init_plateau(){
 	return plateau;
 }
 
+void free_plateau(plateau* p){
+	int i,j;
+	for(i = 0 ; i < 8 ; i++){
+		for(j = 0 ; j < 8 ; j++){
+			if(p->cell[i][j] != NULL){
+				free_pion(p->cell[i][j]);
+			}
+		}
+	}
+	free(p);
+}
+
 int affiche_plateau(plateau* p, int tour){
 	int i,j;
 	printf("\n                    ______________________________________");
@@ -100,6 +112,7 @@ int trans_coord(char x){
 int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
 	int rep;
+
 	/* si la case de départ est vide */
 	if(p->cell[y1][x1] == NULL){
 		return 0;
@@ -131,6 +144,16 @@ int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur)
 	return 1;
 }
 
+int coord_dans_tab(int x, int y){
+	if(x > 8) return 0;
+	if(x < 0) return 0;
+	if(y > 8) return 0;
+	if(y < 0) return 0;
+	else return 1;
+}
+
+
+
 void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
 /* retourne la liste des positions parcourables par la pièce */
 	liste* i = *l;
@@ -138,25 +161,43 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 		switch(forme){
 			case 1:
 				if(joueur % 2 == 0){
-					if((p->cell[(i->y)+1][i->x] == NULL) || (p->cell[i->y][i->x]->couleur == ((joueur + 1) % 2) && x2 == i->x && y2 == (i->y) + 1)){
-						append(l, i->x, (i->y) + 1);
+					if((p->cell[(i->y)+1][i->x] == NULL) || ((x2 == i->x) && (y2 == (i->y) + 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x), (i->y)+1)){ 
+							append(l, i->x, (i->y) + 1);
+						}
 					}
-					if((p->cell[i->y][(i->x)+1] == NULL) || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == i->y)){
-						append(l, (i->x) + 1, i->y);
+					if((p->cell[i->y][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && y2 == i->y)){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)+1, (i->y))){ 
+							append(l, (i->x) + 1, i->y);
+						}
 					}
-					if((p->cell[i->y][(i->x)-1] == NULL) || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == i->y)){
-						append(l, (i->x) - 1, i->y);
+					if((p->cell[i->y][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && y2 == i->y)){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)-1, (i->y))){ 
+							append(l, (i->x) - 1, i->y);
+						}
 					}
 				}
 				else{
-					if((p->cell[(i->y)-1][i->x] == NULL) || (p->cell[(i->y)-1][i->x]->couleur == ((joueur + 1) % 2) && x2 == i->x && y2 == (i->y) - 1)){
-						append(l, i->x, (i->y) - 1);
+					if((p->cell[(i->y)-1][i->x] == NULL) || ((x2 == i->x) && (y2 == (i->y) - 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x), (i->y)-1)){ 
+							append(l, i->x, (i->y) - 1);
+						}
 					}
-					if((p->cell[i->y][(i->x)+1] == NULL) || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) + 1 && y2 == i->y)){
-						append(l, (i->x) + 1, i->y);
+					if((p->cell[i->y][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && y2 == i->y)){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)+1, (i->y))){ 
+							append(l, (i->x) + 1, i->y);
+						}
 					}
-					if((p->cell[i->y][(i->x)-1] == NULL) || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2) && x2 == (i->x) - 1 && y2 == i->y)){
-						append(l, (i->x) - 1, i->y);
+					if((p->cell[i->y][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && y2 == i->y)){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)-1, (i->y))){ 
+							append(l, (i->x) - 1, i->y);
+						}
 					}
 				}
 				break;
@@ -173,19 +214,31 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 
 			case 4:
 				if(joueur % 2 == 0){
-					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || ((p->cell[(i->y)+1][(i->x)+1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) + 1) && (y2 == (i->y) + 1))){
-						append(l, (i->x) + 1, (i->y) + 1);
+					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && (y2 == (i->y) + 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)+1, (i->y)+1)){ 
+							append(l, (i->x) + 1, (i->y) + 1);
+						}
 					}
-					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || ((p->cell[(i->y)+1][(i->x)-1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) - 1) && (y2 == (i->y) + 1))){
-						append(l, (i->x) - 1, (i->y) + 1);
+					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && (y2 == (i->y) + 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)-1, (i->y)+1)){ 
+							append(l, (i->x) - 1, (i->y) + 1);
+						}
 					}
 				}
 				else{
-					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || ((p->cell[(i->y)-1][(i->x)+1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) + 1) && (y2 == (i->y) - 1))){
-						append(l, (i->x) + 1, (i->y) - 1);
+					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && (y2 == (i->y) - 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)+1, (i->y)-1)){ 
+							append(l, (i->x) + 1, (i->y) - 1);
+						}
 					}
-					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || ((p->cell[(i->y)-1][(i->x)-1]->couleur == ((joueur + 1) % 2)) && (x2 == (i->x) - 1) && (y2 == (i->y) - 1))){
-						append(l, (i->x) - 1, (i->y) - 1);
+					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && (y2 == (i->y) - 1))){
+						/* test si les coordonnées sont dans les limites du tableau */
+						if(coord_dans_tab((i->x)-1, (i->y)-1)){ 
+							append(l, (i->x) - 1, (i->y) - 1);
+						}
 					}
 				}
 				break;
@@ -219,11 +272,20 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 }
 
 void deplacement(plateau* p, int x1, int y1, int x2, int y2){
+	pion* pion;
+	/* la case d'arrivée est un pion ami */
 	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
 		composition(p,x1,y1,x2,y2);
 	}
+	/* la case d'arrivée est un pion ennemi */
+	else if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur)){
+		pion = p->cell[y2][x2];
+		p->cell[y2][x2] = p->cell[y1][x1];
+		free_pion(pion);
+	}
+	/* la case d'arrivée est vide */
 	else{
-		 p->cell[y2][x2] = p->cell[y1][x1];
+		p->cell[y2][x2] = p->cell[y1][x1];
 	}
 	p->cell[y1][x1] = NULL;
 }
@@ -267,235 +329,9 @@ int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
 	return 1;		
 }
 
-/*int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
-	int forme;
-
-	if(p->cell[y1][x1] == NULL) return 0;
-	else forme = p->cell[y1][x1]->forme;
-
-	if(type == 2) {
-		switch(forme){
-			case 2:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur)
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,1)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur){
-						return 0;
-					}
-					if(p->cell[y3][x3]->taille + 1 > 2){
-						return 0;
-					}
-				}
-				break;
-
-			case 3:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,1) 
-					|| !meme_sens(x2,y2,x3,y3,x4,y4,1)){
-						return 0;	
-				}
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 5:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
-			
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 6:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,1)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				
-				if(p->cell[y4][x4] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 9:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				if(p->cell[y4][x4] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-		}	
-	}
-
-	else if(type == 1){
-		switch(forme){
-			case 8:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 12:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,4) 
-					|| !meme_sens(x2,y2,x3,y3,x4,y4,4)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-				
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y4][x4] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 5:
-				if(p->cell[y2][x2] == NULL){
-					fprintf(stdout, "coucou");
-				}
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
-				
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 9:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x1,y1,x2,y2,x3,y3,4)){
-						return 0;
-				}
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y4][x4] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-
-			case 6:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) 
-					|| !deplacement_possible(p,x2,y2,x3,y3,joueur) 
-					|| !deplacement_possible(p,x3,y3,x4,y4,joueur)
-					|| !meme_sens(x2,y2,x3,y3,x4,y4,1)){
-						return 0;
-				}
-
-				if(p->cell[y2][x2] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
-				}
-
-				if(p->cell[y3][x3] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
-				}
-				
-				if(p->cell[y4][x4] != NULL){
-					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
-				}
-				break;
-		}	
-	}
-	return 1;
-}
 
 
-void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_line, int type) {
+/*void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_line, int type) {
 	int forme, couleur;
 
 	forme = p->cell[y1][x1]->forme;
@@ -566,16 +402,14 @@ void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int
 int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
 
 	int forme;
-	fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, type: %d, joueur: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, type, joueur);
 
 	if(p->cell[y1][x1] == NULL) return 0;
 	else forme = p->cell[y1][x1]->forme;
 
-
 	if(type == 1) {
 		switch(forme){
 			case 2:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
+				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
 					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
@@ -587,7 +421,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 3:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1) || !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -604,7 +438,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 5:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
 					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
@@ -613,10 +447,11 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
 					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
 				}
+
 				break;
 
 			case 6:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -633,7 +468,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 9:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -654,7 +489,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 	else if(type == 2) {
 		switch(forme){
 			case 8:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
+				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
 					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
@@ -666,7 +501,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 12:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4) || !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -683,7 +518,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 5:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur)) return 0;
+				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
 					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
@@ -696,7 +531,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 9:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -713,7 +548,7 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 				break;
 
 			case 6:
-				if(!deplacement_possible(p,x1,y1,x2,y2,joueur) || !deplacement_possible(p,x2,y2,x3,y3,joueur) || !deplacement_possible(p,x3,y3,x4,y4,joueur)
+				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -732,3 +567,229 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 	}
 	return 1;
 }
+
+int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur){
+	/* retourne 1 si le déplacement est posible, 0 sinon.*/
+	int rep;
+	if(p->cell[y1][x1] == NULL){
+		return 0;
+	}
+	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
+		return 0;
+	}
+	if(x1 == x2 && y1 == y2){
+		return 0;
+	}
+	if(p->cell[y1][x1]->couleur == joueur % 2){
+		return 0;
+	}
+	/*interdiction des retours en arrière
+	  if(joueur % 2 == 0 && y2 < y1) return 0; 
+	  else if(joueur % 2 != 0 && y2 > y1) return 0;
+	  else {
+	  switch(forme){
+	  case 1:
+	  if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+	  break;
+	  case 2:
+	  if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 2 || fabs(y1-y2) > 2) return 0;
+	  break;
+
+	  case 3:
+	  if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 3 || fabs(y1-y2) > 3) return 0;
+	  break;
+
+	  case 4:
+	  if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 1) return 0;
+	  break;
+
+	  case 8:
+	  if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
+	  break;
+
+	  case 12:
+	  if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
+	  break;
+
+	  case 5:
+	  if(fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+	  break;
+
+	  case 9:
+	  if(((y2-y1 == 0 || fabs(y2-y1) == 1)  && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && fabs(x1-x2) != 2) || (fabs(y1-y2) > 2)) return 0;
+	  break;
+
+	  case 6:
+	  if(((y1 == y2) && fabs(x1-x2) > 2) || (fabs(y1-y2) == 1 && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && x1 != x2) || (fabs(y1-y2) > 2)) return 0;
+	  break;
+
+	  default:
+	  return 0;
+	  break;
+	  }
+	  }*/
+	  else{
+		  liste* l = init_liste(x1, y1);
+		  deplacements_possibles2(&l, p->cell[y1][x1]->forme, joueur);
+		  rep = est_present(l, x2, y2);
+		  free_liste(l);
+		  fprintf(stdout, "Deplacement possible: %d", rep);
+		  return rep;
+	  }
+	  return 1;
+}
+
+
+void deplacements_possibles2(liste** l, int forme, int joueur){
+	/* retourne la liste des positions parcourables par la pièce */
+	liste* i = *l;
+	for(; i != NULL ; i = i->suivant){
+		switch(forme){
+			case 1:
+				if(joueur % 2 == 0){
+					append(l, i->x, i->y + 1);
+					append(l, i->x + 1, i->y);
+					append(l, i->x - 1, i->y);
+				}
+				else{
+					append(l, i->x, i->y - 1);
+					append(l, i->x + 1, i->y);
+					append(l, i->x - 1, i->y);
+				}
+				break;
+
+			case 2:
+				deplacements_possibles2(l, 1, joueur);
+				deplacements_possibles2(l, 1, joueur);
+				break;
+
+			case 3:
+				deplacements_possibles2(l, 2, joueur);
+				deplacements_possibles2(l, 1, joueur);
+				break;
+
+			case 4:
+				if(joueur % 2 == 0){
+					append(l, i->x + 1, i->y + 1);
+					append(l, i->x - 1, i->y + 1);
+				}
+				else{
+					append(l, i->x + 1, i->y - 1);
+					append(l, i->x - 1, i->y - 1);
+				}
+				break;
+
+			case 5:
+				deplacements_possibles2(l, 1, joueur);
+				deplacements_possibles2(l, 4, joueur);
+				break;
+
+			case 6:
+				deplacements_possibles2(l, 2, joueur);
+				deplacements_possibles2(l, 4, joueur);
+				break;
+
+			case 8:
+				deplacements_possibles2(l, 4, joueur);
+				deplacements_possibles2(l, 4, joueur);
+				break;
+
+			case 9:
+				deplacements_possibles2(l, 1, joueur);
+				deplacements_possibles2(l, 8, joueur);
+				break;
+
+			case 12:
+				deplacements_possibles2(l, 4, joueur);
+				deplacements_possibles2(l, 8, joueur);
+				break;
+		}
+	}
+}
+
+/*void deplacements_possibles2(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
+ retourne la liste des positions parcourables par la pièce 
+	liste* i = *l;
+	for(; i != NULL ; i = i->suivant){
+		switch(forme){
+			case 1:
+				if(joueur % 2 == 0){
+					if(p->cell[(i->y)+1][i->x] == NULL || (p->cell[(i->y)+1][i->x]->couleur == ((joueur + 1) % 2))){
+						append(l, i->x, (i->y) + 1);
+					}
+					if(p->cell[i->y][(i->x)+1] == NULL || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) + 1, i->y);
+					}
+					if(p->cell[i->y][(i->x)-1] == NULL || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) - 1, i->y);
+					}
+				}
+				else{
+					if(p->cell[(i->y)-1][i->x] == NULL || (p->cell[(i->y)-1][i->x]->couleur == ((joueur + 1) % 2))){
+						append(l, i->x, (i->y) - 1);
+					}
+					if(p->cell[i->y][(i->x)+1] == NULL || (p->cell[i->y][(i->x)+1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) + 1, i->y);
+					}
+					if(p->cell[i->y][(i->x)-1] == NULL || (p->cell[i->y][(i->x)-1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) - 1, i->y);
+					}
+				}
+				break;
+
+			case 2:
+				deplacements_possibles2(p, l, l2, 1, x2, y2, joueur);
+				deplacements_possibles2(p, l, l2, 1, x2, y2, joueur);
+				break;
+
+			case 3:
+				deplacements_possibles2(p, l, l2, 2, x2, y2, joueur);
+				deplacements_possibles2(p, l, l2, 1, x2, y2, joueur);
+				break;
+
+			case 4:
+				if(joueur % 2 == 0){
+					if(p->cell[(i->y)+1][(i->x)+1] == NULL || (p->cell[(i->y)+1][(i->x)+1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) + 1, (i->y) + 1);
+					}
+					if(p->cell[(i->y)+1][(i->x)-1] == NULL || (p->cell[(i->y)+1][(i->x)-1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) - 1, (i->y) + 1);
+					}
+				}
+				else{
+					if(p->cell[(i->y)-1][(i->x)+1] == NULL || (p->cell[(i->y)-1][(i->x)+1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) + 1, (i->y) - 1);
+					}
+					if(p->cell[(i->y)-1][(i->x)-1] == NULL || (p->cell[(i->y)-1][(i->x)-1]->couleur == ((joueur + 1) % 2))){
+						append(l, (i->x) - 1, (i->y) - 1);
+					}
+				}
+				break;
+
+			case 5:
+				deplacements_possibles2(p, l, l2, 1, x2, y2, joueur); 
+				deplacements_possibles2(p, l2, l, 4, x2, y2, joueur);
+				break;
+
+			case 6:
+				deplacements_possibles2(p, l, l2, 2, x2, y2, joueur);
+				deplacements_possibles2(p, l2, l, 4, x2, y2, joueur);
+				break;
+
+			case 8:
+				deplacements_possibles2(p, l, l2, 4, x2, y2, joueur);
+				deplacements_possibles2(p, l, l2, 4, x2, y2, joueur);
+				break;
+
+			case 9:
+				deplacements_possibles2(p, l, l2, 1, x2, y2, joueur);
+				deplacements_possibles2(p, l2, l, 8, x2, y2, joueur);
+				break;
+
+			case 12:
+				deplacements_possibles2(p, l, l2, 4, x2, y2, joueur);
+				deplacements_possibles2(p, l, l2, 8, x2, y2, joueur);
+				break;
+		}
+	}
+}*/

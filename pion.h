@@ -28,4 +28,5 @@ typedef struct pion{
 } pion;
 
 pion* init_pion(int couleur, int forme);
+void free_pion(pion* p);
 void affiche_pion(pion* p);

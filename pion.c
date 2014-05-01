@@ -8,6 +8,11 @@ pion* init_pion(int couleur, int forme){
 	return p;
 }
 
+void free_pion(pion* p){
+	free(p);
+}
+	
+
 void affiche_pion(pion* p){
 	char* rep;
 	switch(p->forme){
