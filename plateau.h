@@ -1,4 +1,5 @@
 #include "pion.h"
+#include <math.h>
 
 typedef struct plateau{
 	pion* cell[8][8];
@@ -34,8 +35,7 @@ void composition2(plateau* p, int x1, int y1, int forme);
 
 int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme);
 int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur);
-void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_line, int type);
-void deplacements_possibles2(liste** l, int forme, int joueur);
+void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_len, int type);
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur);
 
 /* Fonctions relatives au liste */
