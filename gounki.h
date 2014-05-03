@@ -15,9 +15,9 @@ int read_options(int argc, char* argv[]);
 	char* argv[]: tableau contenant les chaînes de caractères
 	return: void */
 
-int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int* y4, int* type, int* size_line);
+int read_line(point** point_1, point** point_2, point** point_3, point** point_4,  int* type, int* size_line);
 /*	Fonction qui permet de lire une ligne entrée par l'utilisateur
-	int* x1, x2, y1, y2, x3, x3, y4, y4: coordonnées lues
+	point** point_1 point_2 point_3 point_4: points à passer en argument
 	int* type: + (1) ou * (2) pour les déploiements
 	int* size_line: longueur de la ligne
 	return: int: 1 pour déplacement, 2 pour déploiement, 3 pour victoire */

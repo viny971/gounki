@@ -109,9 +109,14 @@ int trans_coord(char x){
 	return -1;
 }
 
-int deplacement_possible(plateau* p, int x1, int y1, int x2, int y2, int joueur){
+int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
 	int rep;
+/* transformation des coordonnées pour faciliter l'utilisation */
+	int x1 = point_1->x;
+	int y1 = point_1->y;
+	int x2 = point_2->x;
+	int	y2 = point_2->y;
 
 	/* si la case de départ est vide */
 	if(p->cell[y1][x1] == NULL){
@@ -270,8 +275,12 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 	}
 }
 
-void deplacement(plateau* p, int x1, int y1, int x2, int y2){
+void deplacement(plateau* p, point* point_1, point* point_2){
 	pion* pion;
+	int	x1 = point_1->x;
+	int	y1 = point_1->y;
+	int	x2 = point_2->x;
+	int y2 = point_2->y;
 	/* la case d'arrivée est un pion ami */
 	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
 		composition(p,x1,y1,x2,y2);
@@ -328,8 +337,17 @@ int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
 	return 1;		
 }
 
-int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
+int deploiement_possible(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int type, int joueur) {
 	int forme;
+	/* transformation des coordonnées pour une utilisation simplifiée */
+	int x1 = point_1->x;
+	int	y1 = point_1->y;
+	int	x2 = point_2->x;
+	int	y2 = point_2->y;
+	int	x3 = point_3->x;
+	int	y3 = point_3->y;
+	int	x4 = point_4->x;
+	int	y4 = point_4->y;
 
 	if(p->cell[y1][x1] == NULL) return 0;
 	else forme = p->cell[y1][x1]->forme;
@@ -536,8 +554,17 @@ int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme,
 	return 1;
 }
 
-void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_len, int type) {
+void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type) {
 	int forme, couleur;
+	/* transformation des coordonées pour une utilisation simplifiée */
+	int	x1 = point_1->x;
+	int	y1 = point_1->y;
+	int	x2 = point_2->x;
+	int	y2 = point_2->y;
+	int	x3 = point_3->x;
+	int	y3 = point_3->y;
+	int	x4 = point_4->x;
+	int	y4 = point_4->y;
 
 	forme = p->cell[y1][x1]->forme;
 	couleur = p->cell[y1][x1]->couleur;

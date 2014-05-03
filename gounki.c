@@ -56,7 +56,7 @@ int read_options(int argc, char* argv[]){
 	return options;
 }
 
-int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int* y4, int* type, int* size_line){
+int read_line(point** point_1, point** point_2, point** point_3, point** point_4,  int* type, int* size_line){
 	char* line = NULL;
 	int length;
 	size_t size;
@@ -77,18 +77,18 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 			return 0;
 		}
 		/* transformation des coordonées */
-		*x1 = trans_coord(line[0]);
-		*y1 = 7 - trans_coord(line[1]);
+		(*point_1)->x = trans_coord(line[0]);
+		(*point_1)->y = 7 - trans_coord(line[1]);
 		
 		if(length == 9 || length == 12) {
-			*x2 = trans_coord(line[3]);
-			*y2 = 7 - trans_coord(line[4]);
-			*x3 = trans_coord(line[6]);
-			*y3 = 7 - trans_coord(line[7]);
+			(*point_2)->x = trans_coord(line[3]);
+			(*point_2)->y = 7 - trans_coord(line[4]);
+			(*point_3)->x = trans_coord(line[6]);
+			(*point_3)->y = 7 - trans_coord(line[7]);
 		}
 		if(length == 12) {
-			*x4 = trans_coord(line[9]);
-			*y4 = 7 - trans_coord(line[10]);
+			(*point_4)->x = trans_coord(line[9]);
+			(*point_4)->y = 7 - trans_coord(line[10]);
 		}
 		/* enregistrement du type de déploiement */
 		if(line[2] == '+'){
@@ -104,17 +104,17 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 	}
 	/* retourne 3 si une victoire doit être détectée */
 	if(line[2] == '#'){
-		*x1 = trans_coord(line[0]);
-		*y1 = 7 - trans_coord(line[1]);
+		(*point_1)->x = trans_coord(line[0]);
+		(*point_1)->y = 7 - trans_coord(line[1]);
 		free(line);
 		return 3;
 	}
 	/* retourne 1 si c'est un déplacement */
 	else{
-		*x1 = trans_coord(line[0]);
-		*x2 = trans_coord(line[3]);
-		*y1 = 7 - trans_coord(line[1]);
-		*y2 = 7 - trans_coord(line[4]);
+		(*point_1)->x = trans_coord(line[0]);
+		(*point_1)->y = 7 - trans_coord(line[1]);
+		(*point_2)->x = trans_coord(line[3]);
+		(*point_2)->y = 7 - trans_coord(line[4]);
 		free(line);
 		return 1;
 	}
@@ -122,7 +122,11 @@ int read_line(int* x1, int* y1, int* x2, int* y2, int* x3, int* y3, int* x4, int
 }
 
 int game_loop(){
-	int  x1, y1, x2, y2, x3, y3, x4, y4, type, size, c = 0, action;
+	int type, size, c = 0, action;
+	point* point_1 = malloc(sizeof(point));
+	point* point_2 = malloc(sizeof(point));
+	point* point_3 = malloc(sizeof(point));
+	point* point_4 = malloc(sizeof(point));
 
 	/* initialisation puis affichage du plateau de jeu */
 	plateau* p = init_plateau();
@@ -132,7 +136,7 @@ int game_loop(){
 		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 		c++;
 
-		action = read_line(&x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4, &type, &size);
+		action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
 
 		if(!action){
 			printf("Erreur, recommencez. 1\n");
@@ -142,23 +146,23 @@ int game_loop(){
 		switch(action){
 			/* cas 1: déplacement standard */
 			case 1:
-				if(!deplacement_possible(p, x1, y1, x2, y2, c)){
+				if(!deplacement_possible(p, point_1, point_2, c)){
 					printf("Erreur, recommencez. 2\n");
 					c--;
 				}
 				else{
-					deplacement(p, x1, y1, x2, y2);
+					deplacement(p, point_1, point_2);
 					affiche_plateau(p,c);
 				}
 				break;
 			/* cas 2: déploiement */
 			case 2:
-				if(!deploiement_possible(p,x1, y1, x2, y2, x3, y3, x4, y4, type, c)){
+				if(!deploiement_possible(p, point_1, point_2, point_3, point_4, type, c)){
 					printf("Déploiement non valide.\n");
 					c--;
 				}
 				else{
-					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);
+					deploiement(p, point_1, point_2, point_3, point_4, size, type);
 					affiche_plateau(p,c);	    
 				}
 				break;
