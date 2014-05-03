@@ -158,9 +158,7 @@ int game_loop(){
 					c--;
 				}
 				else{
-					/*fprintf(stdout, "\nx1: %d, y1: %d, x2: %d, y2: %d, x3: %d, y3: %d, x4: %d, y4: %d, size: %d, type: %d\n", x1, y1, x2, y2, x3, y3, x4, y4, size, type);
-					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);*/
-					fprintf(stdout, "Deploiement possible");
+					deploiement(p,x1, y1, x2, y2, x3, y3, x4, y4, size, type);
 					affiche_plateau(p,c);	    
 				}
 				break;

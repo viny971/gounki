@@ -92,7 +92,7 @@ int trans_coord(char x){
 		case 'D':
 			return 3; break;
 		case 'e':
-		case 'E':
+		case 'E' :
 			return 4; break;
 		case 'f':
 		case 'F':
@@ -151,7 +151,6 @@ int coord_dans_tab(int x, int y){
 	if(y < 0) return 0;
 	else return 1;
 }
-
 
 
 void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
@@ -329,78 +328,7 @@ int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
 	return 1;		
 }
 
-
-
-/*void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_len, int type) {
-	int forme, couleur;
-
-	forme = p->cell[y1][x1]->forme;
-	couleur = p->cell[y1][x1]->couleur;
-
-	if(str_len == 9) {
-		if(type == 2){
-			if(forme == 2){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-			}
-			else if(forme == 5) {
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,4,couleur);
-			}		
-		}
-		else if(type == 1){
-			if(forme == 8){
-				deplacement2(p,x2,y2,4,couleur);
-				deplacement2(p,x3,y3,4,couleur);
-			}
-			else if(forme == 5){
-				deplacement2(p,x2,y2,4,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-			}
-		}
-	}
-	else if(str_len == 12) {
-		if(type == 2){
-			if(forme == 3){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-				deplacement2(p,x4,y4,1,couleur);
-			}
-			else if(forme == 6){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-				deplacement2(p,x4,y4,4,couleur);
-			}
-			else if(forme == 9){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,4,couleur);
-				deplacement2(p,x4,y4,4,couleur);
-			}
-		}
-		else if(type == 1){
-			if(forme == 12){
-				deplacement2(p,x2,y2,4,couleur);
-				deplacement2(p,x3,y3,4,couleur);
-				deplacement2(p,x4,y4,4,couleur);
-			}
-			else if(forme == 9){
-				deplacement2(p,x2,y2,4,couleur);
-				deplacement2(p,x3,y3,4,couleur);
-				deplacement2(p,x4,y4,1,couleur);
-			}
-			else if(forme == 6){
-				deplacement2(p,x2,y2,4,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-				deplacement2(p,x4,y4,1,couleur);
-			}
-		}
-
-	}
-	p->cell[y1][x1] = NULL;
-}*/
-
 int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int type, int joueur) {
-
 	int forme;
 
 	if(p->cell[y1][x1] == NULL) return 0;
@@ -569,59 +497,109 @@ int deploiement_possible(plateau* p, int x1, int y1, int x2, int y2, int x3, int
 }
 
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur){
-	if(p->cell[y1][x1] == NULL){
-		return 0;
-	}
-	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
-		return 0;
-	}
-	if(x1 == x2 && y1 == y2){
-		return 0;
-	}
-	if(p->cell[y1][x1]->couleur == joueur % 2){
-		return 0;
-	}
-	else{
-		switch(forme){
-			case 1:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
-				break;
-			case 2:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 2 || fabs(y1-y2) > 2) return 0;
-				break;
+	switch(forme){
+		case 1:
+			if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+			break;
+		case 2:
+			if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 2 || fabs(y1-y2) > 2) return 0;
+			break;
 
-			case 3:
-				if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 3 || fabs(y1-y2) > 3) return 0;
-				break;
+		case 3:
+			if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 3 || fabs(y1-y2) > 3) return 0;
+			break;
 
-			case 4:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 1) return 0;
-				break;
+		case 4:
+			if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 1) return 0;
+			break;
 
-			case 8:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
-				break;
+		case 8:
+			if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
+			break;
 
-			case 12:
-				if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
-				break;
+		case 12:
+			if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
+			break;
 
-			case 5:
-				if(fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
-				break;
+		case 5:
+			if(fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
+			break;
 
-			case 9:
-				if(((y2-y1 == 0 || fabs(y2-y1) == 1)  && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && fabs(x1-x2) != 2) || (fabs(y1-y2) > 2)) return 0;
-				break;
+		case 9:
+			if(((y2-y1 == 0 || fabs(y2-y1) == 1)  && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && fabs(x1-x2) != 2) || (fabs(y1-y2) > 2)) return 0;
+			break;
 
-			case 6:
-				if(((y1 == y2) && fabs(x1-x2) > 2) || (fabs(y1-y2) == 1 && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && x1 != x2) || (fabs(y1-y2) > 2)) return 0;
-				break;
-
-			default:
-				return 0;
-				break;
-		}
+		case 6:
+			if(((y1 == y2) && fabs(x1-x2) > 2) || (fabs(y1-y2) == 1 && fabs(x1-x2) > 1) || (fabs(y1-y2) == 2 && x1 != x2) || (fabs(y1-y2) > 2)) return 0;
+			break;
 	}
 	return 1;
+}
+
+void deploiement(plateau* p, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int str_len, int type) {
+	int forme, couleur;
+
+	forme = p->cell[y1][x1]->forme;
+	couleur = p->cell[y1][x1]->couleur;
+
+	if(str_len == 9) {
+		if(type == 2){
+			if(forme == 2){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+			else if(forme == 5) {
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}		
+		}
+		else if(type == 1){
+			if(forme == 8){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+			}
+			else if(forme == 5){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+			}
+		}
+	}
+	else if(str_len == 12) {
+		if(type == 2){
+			if(forme == 3){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,1,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+		}
+		else if(type == 1){
+			if(forme == 12){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,4,couleur);
+			}
+			else if(forme == 9){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,4,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+			else if(forme == 6){
+				deplacement2(p,x2,y2,4,couleur);
+				deplacement2(p,x3,y3,1,couleur);
+				deplacement2(p,x4,y4,1,couleur);
+			}
+		}
+
+	}
+	p->cell[y1][x1] = NULL;
 }
