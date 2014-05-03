@@ -570,7 +570,7 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	couleur = p->cell[y1][x1]->couleur;
 
 	if(str_len == 9) {
-		if(type == 2){
+		if(type == 1){
 			if(forme == 2){
 				deplacement2(p,x2,y2,1,couleur);
 				deplacement2(p,x3,y3,1,couleur);
@@ -580,7 +580,7 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 				deplacement2(p,x3,y3,4,couleur);
 			}		
 		}
-		else if(type == 1){
+		else if(type == 2){
 			if(forme == 8){
 				deplacement2(p,x2,y2,4,couleur);
 				deplacement2(p,x3,y3,4,couleur);
@@ -592,7 +592,7 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 		}
 	}
 	else if(str_len == 12) {
-		if(type == 2){
+		if(type == 1){
 			if(forme == 3){
 				deplacement2(p,x2,y2,1,couleur);
 				deplacement2(p,x3,y3,1,couleur);
@@ -609,7 +609,7 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 				deplacement2(p,x4,y4,4,couleur);
 			}
 		}
-		else if(type == 1){
+		else if(type == 2){
 			if(forme == 12){
 				deplacement2(p,x2,y2,4,couleur);
 				deplacement2(p,x3,y3,4,couleur);
