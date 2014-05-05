@@ -109,6 +109,14 @@ int trans_coord(char x){
 	return -1;
 }
 
+int coord_dans_tab(int x, int y){
+	if(x > 8) return 0;
+	if(x < 0) return 0;
+	if(y > 8) return 0;
+	if(y < 0) return 0;
+	else return 1;
+}
+
 int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur){
 /* retourne 1 si le déplacement est posible, 0 sinon.*/
 	int rep;
@@ -148,15 +156,6 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	}
 	return 1;
 }
-
-int coord_dans_tab(int x, int y){
-	if(x > 8) return 0;
-	if(x < 0) return 0;
-	if(y > 8) return 0;
-	if(y < 0) return 0;
-	else return 1;
-}
-
 
 void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
 /* retourne la liste des positions parcourables par la pièce */
@@ -277,10 +276,7 @@ void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2
 
 void deplacement(plateau* p, point* point_1, point* point_2){
 	pion* pion;
-	int	x1 = point_1->x;
-	int	y1 = point_1->y;
-	int	x2 = point_2->x;
-	int y2 = point_2->y;
+	int	x1 = point_1->x; int y1 = point_1->y; int x2 = point_2->x; int y2 = point_2->y; 
 	/* la case d'arrivée est un pion ami */
 	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
 		composition(p,x1,y1,x2,y2);
@@ -629,4 +625,10 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 
 	}
 	p->cell[y1][x1] = NULL;
+}
+
+int end_game(plateau* p, point* point, int joueur){
+	int x = point->x; int y = point->y;
+	switch(p->cell[y][x]){
+	}	
 }

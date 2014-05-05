@@ -2,11 +2,12 @@
 #include <math.h>
 
 typedef struct plateau{
+/*	structure du plateau de jeu: un tableau de taill 8x8 de pions */
 	pion* cell[8][8];
 } plateau;
 
 typedef struct liste{
-/* liste ayant comme données la position d'un pion */
+/*	liste ayant comme données la position d'un pion */
 	int x;
 	int y;
 	struct liste* suivant;
@@ -19,29 +20,78 @@ typedef struct point{
 	int y;
 } point;
 
-/* fonction relatives au plateau et à ses règles */
+/*	Fonctions relatives au plateau et à ses règles
+----------------------------------------------------------------------------------------------------------------------------------------*/
 plateau* init_plateau();
+/*	initialise un plateau avec des pions
+	return: plateau* */
 void free_plateau(plateau* p);
+/*	libére un plateau avec tout ce qu'il contient
+	plateau* p: pointeur vers le plateau à libérer
+	return: void */
 int affiche_plateau(plateau* p, int tour);
+/* 	affiche dans le terminal le plateau
+	plateau* p: le plateau à afficher
+	int tour: le numéro du tour en cours
+	return: int 1 si la fonction termine sans erreur */
 
 void deplacement(plateau* p, point* point_1, point* point_2);
+/*	deplace un pion d'un point à un autre
+	point* point_1: point de départ. point* point_2: point d'arrivé
+	return void */
 void deplacement2(plateau* p, int x1, int y1, int forme, int couleur);
+/*	met un pion dans la case x1, y1
+	int x1, y1: case modifiée
+	int forme, couleur: caractéristiques du pion
+	return void */
 
 int trans_coord(char x);
+/* 	transforme les coordonnées entrées par l'utilisateur en int facilement utilisable dans les fonctions
+	char x: le char à transformer en int
+	return: int: la valeur simplifiée */
 
 int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur);
+/*	test si le deplacement est possible
+	plateau* p: le plateau où les pions sont
+	point* point_1, point_2: cases d'arrivée et de départ
+	int joueur: numéro du tour pour déterminer le joueur 
+	return: int 1 (Vrai), 2 (Faux)*/
 void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur);
+/*	fonction auxilliaire utilisant des listes pour déterminer l'ensemble des déplacements possibles
+	plateau* p: le plateau où se trouvent les pions
+	liste** l, l2: listes à modifier
+	int forme: forme du pion
+	int x2, y2: case d'arrivée
+	int joueur: numéro du tour pour déterminer le joueur 
+	return: void */
 int coord_dans_tab(int x, int y);
 /*	test si les coordonnées entrées ne dépassent pas les limites du tableau
 	int x, y: coordonnées en x et y
 	return: int: 1 = Vrai, 2 = False */
+
 void composition(plateau* p, int x1,  int y1,  int x2,  int y2); 
+/*	compose deux pions lors d'un déplacement
+	plateau* p: le plateau où se trouvent les pions
+	int x1, y1: case de départ
+	int x2, y2: case d'arrivée
+	return: void */
 void composition2(plateau* p, int x1, int y1, int forme);
+/*	compose deux pions lors d'un déploiement
+	plateau* p: le plateau où se trouvent les pions
+	int x1, y1: case à modifier
+	int forme: forme à ajouter
+	return: void */
 
 int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme);
+/*	test si la case (x3,y3) est un déplacement s'effectuant dans le même sens que de (x1,y1) à (x2,y2)
+	int x1, y1, x2, y2, x3, y3: coordonnées
+	int forme: la forme pour déterminer le déplacement
+	return: int: 1 (Vrai), 0 (False) */
 int deploiement_possible(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int type, int joueur);
 /* 	test si le deploiement est possible
 	point* point_1 point_2, point_3, point_4: les points utilisés par le déploiement
+	int type: type de déploiement 1:+ 2:*
+	int joueur: numéro du tour pour déterminer le joueur
 	return: 1:(Vrai) 2:(Faux) */
 void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type);
 /*	effectue un deploiement
@@ -49,10 +99,31 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	return: void */
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur);
 
-/* Fonctions relatives au liste */
-liste* init_liste();
+
+/* Fonctions relatives au liste
+----------------------------------------------------------------------------------------------------------------------------------------*/
+liste* init_liste(int x, int y);
+/* alloue de l'espace pour une liste dont la valeur est x et y et dont le suivant est NULL
+	int x,y: valeurs à entrer
+	return: liste* */
 void free_liste(liste* l);
+/*	libére l'espace alloué à la liste
+	liste* l: liste à libérer
+	return void */
 void append(liste** l, int x, int y);
+/*	ajoute l'élément (x,y) à une liste
+	int x,y: int à ajouter
+	liste* l1: listes à modifier
+	return void */
 int est_present(liste* l, int x, int y);
+/*	test si (x,y) est dans la liste
+	liste* l: liste à tester
+	return: int: 1 (Vrai) 0 (Faux) */
 liste* concat(liste* l1, liste* l2);
+/*	concaténe deux listes
+	liste* l1, l2: listes à concaténer
+	return liste* */
 void affiche_liste(liste* l); 
+/*	affiche la liste
+	liste* l: liste à afficher
+	return void */
