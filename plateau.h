@@ -56,13 +56,27 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	point* point_1, point_2: cases d'arrivée et de départ
 	int joueur: numéro du tour pour déterminer le joueur 
 	return: int 1 (Vrai), 2 (Faux)*/
-void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur);
+void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, int joueur);
 /*	fonction auxilliaire utilisant des listes pour déterminer l'ensemble des déplacements possibles
 	plateau* p: le plateau où se trouvent les pions
 	liste** l, l2: listes à modifier
 	int forme: forme du pion
 	int x2, y2: case d'arrivée
 	int joueur: numéro du tour pour déterminer le joueur 
+	return: void */
+void se(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void so(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void ne(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void no(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void s(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void n(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void e(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+void o(plateau* p, liste** l, int x, int y, int x2, int y2, int taille);
+/*	ajoutent un certain nombre de déplacement possibles. Vers le nord(n), sud(s), est(e), ouest(o)
+	liste** l: liste à laquelle sont ajoutées les déplacements possibles
+	int x,y: case de départ
+	int x2,y2: case d'arrivée
+	int taille: taille du pion
 	return: void */
 int coord_dans_tab(int x, int y);
 /*	test si les coordonnées entrées ne dépassent pas les limites du tableau
@@ -82,8 +96,13 @@ void composition2(plateau* p, int x1, int y1, int forme);
 	int forme: forme à ajouter
 	return: void */
 
-int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme);
+int meme_sens1(int x1, int y1, int x2, int y2, int x3, int y3, int forme);
 /*	test si la case (x3,y3) est un déplacement s'effectuant dans le même sens que de (x1,y1) à (x2,y2)
+	int x1, y1, x2, y2, x3, y3: coordonnées
+	int forme: la forme pour déterminer le déplacement
+	return: int: 1 (Vrai), 0 (False) */
+int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme);
+/*	test si la case (x3,y3) est un déploiement s'effectuant dans le même sens que de (x1,y1) à (x2,y2)
 	int x1, y1, x2, y2, x3, y3: coordonnées
 	int forme: la forme pour déterminer le déplacement
 	return: int: 1 (Vrai), 0 (False) */

@@ -47,4 +47,5 @@ void affiche_liste(liste* l){
 	for(; i != NULL ; i = i->suivant){
 		printf("(%d,%d)->", i->x, i->y);
 	}
+	fprintf(stdout, "\n");
 }

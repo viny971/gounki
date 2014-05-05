@@ -139,7 +139,7 @@ int game_loop(){
 		action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
 
 		if(!action){
-			printf("Erreur, recommencez. 1\n");
+			printf("Erreur, recommencez.\n");
 			c--;
 		}
 
@@ -147,7 +147,7 @@ int game_loop(){
 			/* cas 1: déplacement standard */
 			case 1:
 				if(!deplacement_possible(p, point_1, point_2, c)){
-					printf("Erreur, recommencez. 2\n");
+					printf("Erreur, recommencez.\n");
 					c--;
 				}
 				else{

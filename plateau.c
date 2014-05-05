@@ -144,133 +144,249 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	}
 	else{
 		liste* l = init_liste(x1, y1);
-		liste* l2 = init_liste(x1, y1);
-		deplacements_possibles(p, &l, &l2, p->cell[y1][x1]->forme, x2, y2, joueur);
+		deplacements_possibles(p, &l, p->cell[y1][x1]->forme, x2, y2, joueur);
 		rep = est_present(l, x2, y2);
-		if(rep != 1){
-			rep = est_present(l2, x2, y2);
-		}
 		free_liste(l);
-		free_liste(l2);
 		return rep;
 	}
 	return 1;
 }
 
-void deplacements_possibles(plateau* p, liste** l, liste** l2, int forme, int x2, int y2, int joueur){
-/* retourne la liste des positions parcourables par la pièce */
-	liste* i = *l;
-	for(; i != NULL ; i = i->suivant){
-		switch(forme){
-			case 1:
-				if(joueur % 2 == 0){
-					if((p->cell[(i->y)+1][i->x] == NULL) || ((x2 == i->x) && (y2 == (i->y) + 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x), (i->y)+1)){ 
-							append(l, i->x, (i->y) + 1);
-						}
-					}
-					if((p->cell[i->y][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && y2 == i->y)){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)+1, (i->y))){ 
-							append(l, (i->x) + 1, i->y);
-						}
-					}
-					if((p->cell[i->y][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && y2 == i->y)){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)-1, (i->y))){ 
-							append(l, (i->x) - 1, i->y);
-						}
-					}
-				}
-				else{
-					if((p->cell[(i->y)-1][i->x] == NULL) || ((x2 == i->x) && (y2 == (i->y) - 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x), (i->y)-1)){ 
-							append(l, i->x, (i->y) - 1);
-						}
-					}
-					if((p->cell[i->y][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && y2 == i->y)){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)+1, (i->y))){ 
-							append(l, (i->x) + 1, i->y);
-						}
-					}
-					if((p->cell[i->y][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && y2 == i->y)){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)-1, (i->y))){ 
-							append(l, (i->x) - 1, i->y);
-						}
-					}
-				}
-				break;
-
-			case 2:
-				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
-				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
-				break;
-
-			case 3:
-				deplacements_possibles(p, l, l2, 2, x2, y2, joueur);
-				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
-				break;
-
-			case 4:
-				if(joueur % 2 == 0){
-					if((p->cell[(i->y)+1][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && (y2 == (i->y) + 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)+1, (i->y)+1)){ 
-							append(l, (i->x) + 1, (i->y) + 1);
-						}
-					}
-					if((p->cell[(i->y)+1][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && (y2 == (i->y) + 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)-1, (i->y)+1)){ 
-							append(l, (i->x) - 1, (i->y) + 1);
-						}
-					}
-				}
-				else{
-					if((p->cell[(i->y)-1][(i->x)+1] == NULL) || ((x2 == (i->x) + 1) && (y2 == (i->y) - 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)+1, (i->y)-1)){ 
-							append(l, (i->x) + 1, (i->y) - 1);
-						}
-					}
-					if((p->cell[(i->y)-1][(i->x)-1] == NULL) || ((x2 == (i->x) - 1) && (y2 == (i->y) - 1))){
-						/* test si les coordonnées sont dans les limites du tableau */
-						if(coord_dans_tab((i->x)-1, (i->y)-1)){ 
-							append(l, (i->x) - 1, (i->y) - 1);
-						}
-					}
-				}
-				break;
-
-			case 5:
-				deplacements_possibles(p, l, l2, 1, x2, y2, joueur); 
-				deplacements_possibles(p, l2, l, 4, x2, y2, joueur);
-				break;
-
-			case 6:
-				deplacements_possibles(p, l, l2, 2, x2, y2, joueur);
-				deplacements_possibles(p, l2, l, 4, x2, y2, joueur);
-				break;
-
-			case 8:
-				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
-				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
-				break;
-
-			case 9:
-				deplacements_possibles(p, l, l2, 1, x2, y2, joueur);
-				deplacements_possibles(p, l2, l, 8, x2, y2, joueur);
-				break;
-
-			case 12:
-				deplacements_possibles(p, l, l2, 4, x2, y2, joueur);
-				deplacements_possibles(p, l, l2, 8, x2, y2, joueur);
-				break;
+void so(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y+i][x-i] == NULL) || ((x2 == x - i) && (y2 == y + i))){
+			if(coord_dans_tab(x - i, y + i)){ 
+				append(l, x - i, y + i);
+			}
 		}
+		else{
+			break;
+		}
+	}
+}
+void se(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y+i][x+i] == NULL) || ((x2 == x+i) && (y2 == y + i))){
+			if(coord_dans_tab(x + i, y + i)){ 
+				append(l, x + i, y + i);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void no(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y-i][x-i] == NULL) || ((x2 == x - i) && (y2 == y - i))){
+			if(coord_dans_tab(x - i, y - i)){ 
+				append(l, x - i, y - i);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void ne(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y-i][x+i] == NULL) || ((x2 == x+i) && (y2 == y - i))){
+			if(coord_dans_tab(x + i, y - i)){ 
+				append(l, x + i, y - i);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void s(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y+i][x] == NULL) || ((x2 == x) && (y2 == y + i))){
+			if(coord_dans_tab(x, y + i)){ 
+				append(l, x, y + i);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+
+void n(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y-i][x] == NULL) || ((x2 == x) && (y2 == y - i))){
+			if(coord_dans_tab(x, y - i)){ 
+				append(l, x, y - i);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void e(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y][x+i] == NULL) || ((x2 == x + i) && (y2 == y))){
+			if(coord_dans_tab(x + i, y)){ 
+				append(l, x + i, y);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void o(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if((p->cell[y][x-i] == NULL) || ((x2 == x - i) && (y2 == y))){
+			if(coord_dans_tab(x - i, y)){ 
+				append(l, x - i, y);
+			}
+		}
+		else{
+			break;
+		}
+	}
+}
+void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, int joueur){
+	/* retourne la liste des positions parcourables par la pièce */
+	/* coordonnées de départ */
+	int x, y;  
+	x = (*l)->x;
+	y = (*l)->y;
+
+	switch(forme){
+		case 1:
+			if(joueur % 2 == 0){
+				s(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			else{
+				n(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			break;
+
+		case 2:
+			if(joueur % 2 == 0){
+				s(p, l, x, y, x2, y2, 2);
+				o(p, l, x, y, x2, y2, 2);
+				e(p, l, x, y, x2, y2, 2);
+			}
+			else{
+				n(p, l, x, y, x2, y2, 3);
+				o(p, l, x, y, x2, y2, 3);
+				e(p, l, x, y, x2, y2, 3);
+			}
+			break;
+
+		case 3:
+			if(joueur % 2 == 0){
+				s(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			else{
+				n(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			break;
+
+		case 4:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 1);
+				so(p, l, x, y, x2, y2, 1);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 1);
+				ne(p, l, x, y, x2, y2, 1);
+			}
+			break;
+
+		case 5:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 1);
+				so(p, l, x, y, x2, y2, 1);
+				s(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 1);
+				ne(p, l, x, y, x2, y2, 1);
+				n(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			break;
+
+		case 6:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 1);
+				so(p, l, x, y, x2, y2, 1);
+				s(p, l, x, y, x2, y2, 2);
+				o(p, l, x, y, x2, y2, 2);
+				e(p, l, x, y, x2, y2, 2);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 1);
+				ne(p, l, x, y, x2, y2, 1);
+				n(p, l, x, y, x2, y2, 3);
+				o(p, l, x, y, x2, y2, 3);
+				e(p, l, x, y, x2, y2, 3);
+			}
+			break;
+
+		case 8:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 2);
+				so(p, l, x, y, x2, y2, 2);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 2);
+				ne(p, l, x, y, x2, y2, 2);
+			}
+			break;
+
+		case 9:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 2);
+				so(p, l, x, y, x2, y2, 2);
+				s(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 2);
+				ne(p, l, x, y, x2, y2, 2);
+				n(p, l, x, y, x2, y2, 1);
+				o(p, l, x, y, x2, y2, 1);
+				e(p, l, x, y, x2, y2, 1);
+			}
+			break;
+
+		case 12:
+			if(joueur % 2 == 0){
+				se(p, l, x, y, x2, y2, 3);
+				so(p, l, x, y, x2, y2, 3);
+			}
+			else{
+				no(p, l, x, y, x2, y2, 3);
+				ne(p, l, x, y, x2, y2, 3);
+			}
+			break;
 	}
 }
 
@@ -321,6 +437,17 @@ void composition(plateau* p, int x1, int y1, int x2, int y2){
 void composition2(plateau* p, int x1, int y1, int forme){
 	p->cell[y1][x1]->taille += 1;
 	p->cell[y1][x1]->forme += forme;
+}
+
+int meme_sens1(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
+	if(forme == 1){
+		if((x1 == x2) && (x2 == x3) && (y1 - 1 == y2) && (y2 - 1 == y3)) return 1;
+		if((x1 == x2 && x2 != x3) || ((y1 == y2) && ((y2 != y3) || (x3 == x2) || (x3 == x1)))) return 0;
+	}
+	else if(forme == 4){
+		if((x2 == x1 + 1 && x3 != x2 + 1) || (x2 == x1 - 1 && x3 != x2 - 1)) return 0;
+	}
+	return 1;		
 }
 
 int meme_sens(int x1, int y1, int x2, int y2, int x3, int y3, int forme) {
@@ -627,8 +754,8 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	p->cell[y1][x1] = NULL;
 }
 
-int end_game(plateau* p, point* point, int joueur){
+/*int end_game(plateau* p, point* point, int joueur){
 	int x = point->x; int y = point->y;
 	switch(p->cell[y][x]){
 	}	
-}
+}*/ 
