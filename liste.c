@@ -49,3 +49,17 @@ void affiche_liste(liste* l){
 	}
 	fprintf(stdout, "\n");
 }
+
+int est_present2(liste* l, int joueur){
+	liste* i = l;
+	int y;
+	if(joueur % 2 == 0) y = 8; 
+	else y = 0;
+
+	for(; i != NULL ; i = i->suivant){
+		if(i->y == y){
+			return 1;
+		}
+	}
+	return 0;
+}

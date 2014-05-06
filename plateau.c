@@ -155,65 +155,65 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 void so(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y+i][x-i] == NULL) || ((x2 == x - i) && (y2 == y + i))){
-			if(coord_dans_tab(x - i, y + i)){ 
+		if(coord_dans_tab(x - i, y + i)){ 
+			if((p->cell[y+i][x-i] == NULL) || ((x2 == x - i) && (y2 == y + i))){
 				append(l, x - i, y + i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void se(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y+i][x+i] == NULL) || ((x2 == x+i) && (y2 == y + i))){
-			if(coord_dans_tab(x + i, y + i)){ 
+		if(coord_dans_tab(x + i, y + i)){ 
+			if((p->cell[y+i][x+i] == NULL) || ((x2 == x+i) && (y2 == y + i))){
 				append(l, x + i, y + i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void no(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y-i][x-i] == NULL) || ((x2 == x - i) && (y2 == y - i))){
-			if(coord_dans_tab(x - i, y - i)){ 
+		if(coord_dans_tab(x - i, y - i)){ 
+			if((p->cell[y-i][x-i] == NULL) || ((x2 == x - i) && (y2 == y - i))){
 				append(l, x - i, y - i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void ne(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y-i][x+i] == NULL) || ((x2 == x+i) && (y2 == y - i))){
-			if(coord_dans_tab(x + i, y - i)){ 
+		if(coord_dans_tab(x + i, y - i)){ 
+			if((p->cell[y-i][x+i] == NULL) || ((x2 == x+i) && (y2 == y - i))){
 				append(l, x + i, y - i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void s(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y+i][x] == NULL) || ((x2 == x) && (y2 == y + i))){
-			if(coord_dans_tab(x, y + i)){ 
+		if(coord_dans_tab(x, y + i)){ 
+			if((p->cell[y+i][x] == NULL) || ((x2 == x) && (y2 == y + i))){
 				append(l, x, y + i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
@@ -221,39 +221,39 @@ void s(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 void n(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y-i][x] == NULL) || ((x2 == x) && (y2 == y - i))){
-			if(coord_dans_tab(x, y - i)){ 
+		if(coord_dans_tab(x, y - i)){ 
+			if((p->cell[y-i][x] == NULL) || ((x2 == x) && (y2 == y - i))){
 				append(l, x, y - i);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void e(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y][x+i] == NULL) || ((x2 == x + i) && (y2 == y))){
-			if(coord_dans_tab(x + i, y)){ 
+		if(coord_dans_tab(x + i, y)){ 
+			if((p->cell[y][x+i] == NULL) || ((x2 == x + i) && (y2 == y))){
 				append(l, x + i, y);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
 void o(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if((p->cell[y][x-i] == NULL) || ((x2 == x - i) && (y2 == y))){
-			if(coord_dans_tab(x - i, y)){ 
+		if(coord_dans_tab(x - i, y)){ 
+			if((p->cell[y][x-i] == NULL) || ((x2 == x - i) && (y2 == y))){
 				append(l, x - i, y);
 			}
-		}
-		else{
-			break;
+			else{
+				break;
+			}
 		}
 	}
 }
@@ -754,8 +754,240 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	p->cell[y1][x1] = NULL;
 }
 
-/*int end_game(plateau* p, point* point, int joueur){
-	int x = point->x; int y = point->y;
-	switch(p->cell[y][x]){
-	}	
-}*/ 
+int end_game(plateau* p, point* point, int joueur){
+	int x = point->x; int y = point->y; int rep = 0;
+	liste* l = init_liste(x, y);
+	switch(p->cell[y][x]->forme){
+		case 1:
+			if(joueur % 2 == 0){
+				s3(p, &l, x, y, 8, 1);
+				o3(p, &l, x, y, 8, 1);
+				e3(p, &l, x, y, 8, 1);
+			}
+			else{
+				n3(p, &l, x, y, 0, 1);
+				o3(p, &l, x, y, 0, 1);
+				e3(p, &l, x, y, 0, 1);
+			}
+			break;
+
+		case 2:
+			if(joueur % 2 == 0){
+				s3(p, &l, x, y, 8, 2);
+				o3(p, &l, x, y, 8, 2);
+				e3(p, &l, x, y, 8, 2);
+			}
+			else{
+				n3(p, &l, x, y, 0, 3);
+				o3(p, &l, x, y, 0, 3);
+				e3(p, &l, x, y, 0, 3);
+			}
+			break;
+
+		case 3:
+			if(joueur % 2 == 0){
+				s3(p, &l, x, y, 8, 1);
+				o3(p, &l, x, y, 8, 1);
+				e3(p, &l, x, y, 8, 1);
+			}
+			else{
+				n3(p, &l, x, y, 0, 1);
+				o3(p, &l, x, y, 0, 1);
+				e3(p, &l, x, y, 0, 1);
+			}
+			break;
+
+		case 4:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 1);
+				so3(p, &l, x, y, 8, 1);
+			}
+			else{
+				no3(p, &l, x, y, 0, 1);
+				ne3(p, &l, x, y, 0, 1);
+			}
+			break;
+
+		case 5:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 1);
+				so3(p, &l, x, y, 8, 1);
+				s3(p, &l, x, y, 8, 1);
+				o3(p, &l, x, y, 8, 1);
+				e3(p, &l, x, y, 8, 1);
+			}
+			else{
+				no3(p, &l, x, y, 0, 1);
+				ne3(p, &l, x, y, 0, 1);
+				n3(p, &l, x, y, 0, 1);
+				o3(p, &l, x, y, 0, 1);
+				e3(p, &l, x, y, 0, 1);
+			}
+			break;
+
+		case 6:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 1);
+				so3(p, &l, x, y, 8, 1);
+				s3(p, &l, x, y, 8, 2);
+				o3(p, &l, x, y, 8, 2);
+				e3(p, &l, x, y, 8, 2);
+			}
+			else{
+				no3(p, &l, x, y, 0, 1);
+				ne3(p, &l, x, y, 0, 1);
+				n3(p, &l, x, y, 0, 3);
+				o3(p, &l, x, y, 0, 3);
+				e3(p, &l, x, y, 0, 3);
+			}
+			break;
+
+		case 8:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 2);
+				so3(p, &l, x, y, 8, 2);
+			}
+			else{
+				no3(p, &l, x, y, 0, 2);
+				ne3(p, &l, x, y, 0, 2);
+			}
+			break;
+
+		case 9:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 2);
+				so3(p, &l, x, y, 8, 2);
+				s3(p, &l, x, y, 8, 1);
+				o3(p, &l, x, y, 8, 1);
+				e3(p, &l, x, y, 8, 1);
+			}
+			else{
+				no3(p, &l, x, y, 0, 2);
+				ne3(p, &l, x, y, 0, 2);
+				n3(p, &l, x, y, 0, 1);
+				o3(p, &l, x, y, 0, 1);
+				e3(p, &l, x, y, 0, 1);
+			}
+			break;
+
+		case 12:
+			if(joueur % 2 == 0){
+				se3(p, &l, x, y, 8, 3);
+				so3(p, &l, x, y, 8, 3);
+			}
+			else{
+				no3(p, &l, x, y, 0, 3);
+				ne3(p, &l, x, y, 0, 3);
+			}
+			break;
+	}
+	rep = est_present2(l, joueur);
+	free_liste(l);
+	return rep;
+} 
+
+void so3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x - i, y)){ 
+			if((p->cell[y+i][x-i] == NULL) || (y2 == y + i)){
+				append(l, x - i, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void se3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x + i, y)){ 
+			if((p->cell[y+i][x+i] == NULL) || (y2 == y + i)){
+				append(l, x + i, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void no3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x - i, y)){ 
+			if((p->cell[y-i][x-i] == NULL) || (y2 == y - i)){
+				append(l, x - i, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void ne3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x + i, y)){ 
+			if((p->cell[y-i][x+i] == NULL) || (y2 == y - i)){
+				append(l, x + i, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void s3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x, y)){ 
+			if((p->cell[y+i][x] == NULL) || (y2 == y + i)){
+				append(l, x, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+
+void n3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x, y)){ 
+			if((p->cell[y-i][x] == NULL) || (y2 == y - i)){
+				append(l, x, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void e3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x + i, y)){ 
+			if((p->cell[y][x+i] == NULL) || (y2 == y)){
+				append(l, x + i, y);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void o3(plateau* p, liste** l, int x, int y, int y2, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x - i, y)){ 
+			if((p->cell[y][x-i] == NULL) || (y2 == y)){
+				append(l, x - i, y);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}

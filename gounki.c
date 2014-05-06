@@ -122,7 +122,7 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 }
 
 int game_loop(){
-	int type, size, c = 0, action;
+	int type, size, c = 0, action, fin;
 	point* point_1 = malloc(sizeof(point));
 	point* point_2 = malloc(sizeof(point));
 	point* point_3 = malloc(sizeof(point));
@@ -168,6 +168,16 @@ int game_loop(){
 				break;
 			/* cas 3: victoire (manque fonction de détection de victoire) */
 			case 3:
+				fin = end_game(p, point_1, c);
+				if(!fin){
+					printf("Erreur, recommencez.\n");
+					c--;
+				}
+				else{
+					printf("\nVictoire de %s%s%s  !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+					return 0;
+				}
+				break;
 			case -1:
 				printf("\nFin de partie !\n");
 				return 0;

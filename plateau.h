@@ -119,6 +119,21 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur);
 
 
+int end_game(plateau* p, point* point, int joueur);
+/*	teste une fin de partie éventuelle
+	plateau* p: le plateau à tester
+	point* point: les coordonnées de la piéce à tester
+	int joueur: int qui permet de déteriminer quel joueur joue
+	return: int: 1 (Vrai) 0 (False)*/
+void so3(plateau* p, liste** l, int x, int y, int y2, int taille);
+void se3(plateau* p, liste** l, int x, int y, int y2, int taille);
+void no3(plateau* p, liste** l, int x, int y, int y2, int taille);
+void ne3(plateau* p, liste** l, int x, int y, int y2, int taille);
+void s3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+void n3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+void e3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+void o3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+
 /* Fonctions relatives au liste
 ----------------------------------------------------------------------------------------------------------------------------------------*/
 liste* init_liste(int x, int y);
@@ -136,6 +151,10 @@ void append(liste** l, int x, int y);
 	return void */
 int est_present(liste* l, int x, int y);
 /*	test si (x,y) est dans la liste
+	liste* l: liste à tester
+	return: int: 1 (Vrai) 0 (Faux) */
+int est_present2(liste* l, int joueur);
+/*	test si y est dans la liste
 	liste* l: liste à tester
 	return: int: 1 (Vrai) 0 (Faux) */
 liste* concat(liste* l1, liste* l2);
