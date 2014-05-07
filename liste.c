@@ -63,3 +63,20 @@ int est_present2(liste* l, int joueur){
 	}
 	return 0;
 }
+
+void random_point(liste* l, point** p1){
+	int r, i;
+	liste* tmp = l;
+  	srand(time(NULL));
+	r = rand() % 100 + 1;
+	for(i = 0 ; i < r ; i++){
+		if(tmp->suivant == NULL){
+		   	tmp = l;
+		}
+		else{
+		   	tmp = tmp->suivant;
+		}
+	}	
+	(*p1)->x = tmp->x;
+	(*p1)->y = tmp->y;
+}

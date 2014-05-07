@@ -149,7 +149,7 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 		free_liste(l);
 		return rep;
 	}
-	return 1;
+	return 0;
 }
 
 void so(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
@@ -285,22 +285,22 @@ void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, in
 				e(p, l, x, y, x2, y2, 2);
 			}
 			else{
-				n(p, l, x, y, x2, y2, 3);
-				o(p, l, x, y, x2, y2, 3);
-				e(p, l, x, y, x2, y2, 3);
+				n(p, l, x, y, x2, y2, 2);
+				o(p, l, x, y, x2, y2, 2);
+				e(p, l, x, y, x2, y2, 2);
 			}
 			break;
 
 		case 3:
 			if(joueur % 2 == 0){
-				s(p, l, x, y, x2, y2, 1);
-				o(p, l, x, y, x2, y2, 1);
+				s(p, l, x, y, x2, y2, 3);
+				o(p, l, x, y, x2, y2, 3);
 				e(p, l, x, y, x2, y2, 1);
 			}
 			else{
-				n(p, l, x, y, x2, y2, 1);
-				o(p, l, x, y, x2, y2, 1);
-				e(p, l, x, y, x2, y2, 1);
+				n(p, l, x, y, x2, y2, 3);
+				o(p, l, x, y, x2, y2, 3);
+				e(p, l, x, y, x2, y2, 3);
 			}
 			break;
 
@@ -756,10 +756,8 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 
 int end_game(plateau* p, point* point_1, int joueur){
 	int x = point_1->x; int y = point_1->y; int rep;
-	point* last;
 	liste* l;
 	l = init_liste(x, y);
-	last = malloc(sizeof(point));
 	rep = 0;
 
 	switch(p->cell[y][x]->forme){
@@ -791,14 +789,14 @@ int end_game(plateau* p, point* point_1, int joueur){
 
 		case 3:
 			if(joueur % 2 == 0){
-				s3(p, &l, x, y, 8, 1);
-				o3(p, &l, x, y, 8, 1);
-				e3(p, &l, x, y, 8, 1);
+				s3(p, &l, x, y, 8, 3);
+				o3(p, &l, x, y, 8, 3);
+				e3(p, &l, x, y, 8, 3);
 			}
 			else{
-				n3(p, &l, x, y, 0, 1);
-				o3(p, &l, x, y, 0, 1);
-				e3(p, &l, x, y, 0, 1);
+				n3(p, &l, x, y, 0, 3);
+				o3(p, &l, x, y, 0, 3);
+				e3(p, &l, x, y, 0, 3);
 			}
 			break;
 
@@ -887,14 +885,7 @@ int end_game(plateau* p, point* point_1, int joueur){
 			break;
 	}
 	rep = est_present2(l, joueur);
-	
-	if(!rep){
-		if(dernier_pion(p, last, joueur)){
-			rep = est_present(l, last->x, last->y);
-		}
-	}
 
-	free(last);
 	free_liste(l);
 	return rep;
 } 
@@ -1004,24 +995,14 @@ void o3(plateau* p, liste** l, int x, int y, int y2, int taille){
 		}
 	}
 }
-int dernier_pion(plateau* p, point* last, int joueur){
-	int compteur = 0, i, j;
+int plus_de_pion(plateau* p, int joueur){
+	int i, j;
 	for(i = 0 ; i < 8 ; i++){
 		for(j = 0 ; j < 8 ; j++){
-			if((p->cell[i][j] != NULL) && ((joueur + 1) % 2 == p->cell[i][j]->couleur)){
-				compteur ++;
-				if(compteur >= 2){
-					last->x = 0; last->y = 0;
-					return 0;
-				}
-				last->x = j; last->y = i;
+			if((p->cell[i][j] != NULL) && ((joueur) % 2 == p->cell[i][j]->couleur)){
+				return 0;
 			}
 		}
 	}
-	if(compteur == 1){
-		return 1;
-	}
-	else{
-		return 0;
-	}
+	return 1;
 }

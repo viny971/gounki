@@ -108,10 +108,6 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 		free(line);
 		return 3;
 	}
-	/* retourne 4 si un des joueurs veut quitter la partie */
-	/*if(strcmp(line,"quitter()")){
-		return 4;
-	}*/
 	/* retourne 1 si c'est un déplacement */
 	else{
 		(*point_1)->x = trans_coord(line[0]);
@@ -135,12 +131,13 @@ int game_loop(int options){
 	plateau* p = init_plateau();
 	affiche_plateau(p,0);
 
-	while(1){
+	while(!plus_de_pion(p, c)){
 		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+		fflush(stdout);
 
 		if(options){
 			if((options == 1) && (c % 2 == 0)){
-				action = ia_random(p, point_1, point_2, point_3, point_4, size, c);
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
 			}
 			else if((options == 1) && (c % 2 == 1)){
 				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
@@ -149,7 +146,13 @@ int game_loop(int options){
 				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
 			}
 			else if((options == 2) && (c % 2 == 1)){
-				action = ia_random(p, point_1, point_2, point_3, point_4, size, c);
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+			else if((options == 3) && (c % 2 == 0)){
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+			else if((options == 3) && (c % 2 == 1)){
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
 			}
 		}
 		else{
@@ -194,18 +197,20 @@ int game_loop(int options){
 					c--;
 				}
 				else{
-					printf("\nVictoire de %s%s%s  !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+					printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 					free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 					return 0;
 				}
 				break;
 			case  4:
 			case -1:
-				printf("\nFin de partie !\n");
+				printf("\nFin de partie: !\n");
 				free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 				return 0;
 		}
 	}
+	printf("\nFin de partie:");
+	printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 	free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 	return 0;	
 }
@@ -215,7 +220,12 @@ int main(int argc, char* argv[]){
 
 	/* lecture des options */
 	options = read_options(argc, argv);
-	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+	if((options & (1 << OPTION_JOUEURBLANC_ROBOT))){
+		if((options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			options = 3;
+		}
+	}
+	else if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
 		options = 1;
 	}
 	else if(options & (1 << OPTION_JOUEURNOIR_ROBOT)){
