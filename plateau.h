@@ -1,5 +1,8 @@
+#ifndef PION_FILE
+#define PLATEAU_FILE
 #include "pion.h"
 #include <math.h>
+#endif
 
 typedef struct plateau{
 /*	structure du plateau de jeu: un tableau de taill 8x8 de pions */
@@ -133,8 +136,13 @@ void s3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void n3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void e3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void o3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+int dernier_pion(plateau* p, point* last, int joueur);
+/* test si il ne reste qu'un pion à l'adversaire. Si c'est le cas, ses coordonnées sont renvoyées par last
+	pion* last: coordonnées du dernier pion (si il y a)
+	int joueur: numéro du tour pour déterminer le joueur
+	return: int 1 (Vrai) 0 (Faux) */
 
-/* Fonctions relatives au liste
+/* Fonctions relatives aux listes
 ----------------------------------------------------------------------------------------------------------------------------------------*/
 liste* init_liste(int x, int y);
 /* alloue de l'espace pour une liste dont la valeur est x et y et dont le suivant est NULL

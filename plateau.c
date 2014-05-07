@@ -754,9 +754,14 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	p->cell[y1][x1] = NULL;
 }
 
-int end_game(plateau* p, point* point, int joueur){
-	int x = point->x; int y = point->y; int rep = 0;
-	liste* l = init_liste(x, y);
+int end_game(plateau* p, point* point_1, int joueur){
+	int x = point_1->x; int y = point_1->y; int rep;
+	point* last;
+	liste* l;
+	l = init_liste(x, y);
+	last = malloc(sizeof(point));
+	rep = 0;
+
 	switch(p->cell[y][x]->forme){
 		case 1:
 			if(joueur % 2 == 0){
@@ -882,6 +887,14 @@ int end_game(plateau* p, point* point, int joueur){
 			break;
 	}
 	rep = est_present2(l, joueur);
+	
+	if(!rep){
+		if(dernier_pion(p, last, joueur)){
+			rep = est_present(l, last->x, last->y);
+		}
+	}
+
+	free(last);
 	free_liste(l);
 	return rep;
 } 
@@ -989,5 +1002,26 @@ void o3(plateau* p, liste** l, int x, int y, int y2, int taille){
 				break;
 			}
 		}
+	}
+}
+int dernier_pion(plateau* p, point* last, int joueur){
+	int compteur = 0, i, j;
+	for(i = 0 ; i < 8 ; i++){
+		for(j = 0 ; j < 8 ; j++){
+			if((p->cell[i][j] != NULL) && ((joueur + 1) % 2 == p->cell[i][j]->couleur)){
+				compteur ++;
+				if(compteur >= 2){
+					last->x = 0; last->y = 0;
+					return 0;
+				}
+				last->x = j; last->y = i;
+			}
+		}
+	}
+	if(compteur == 1){
+		return 1;
+	}
+	else{
+		return 0;
 	}
 }

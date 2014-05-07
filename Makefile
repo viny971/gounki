@@ -1,4 +1,4 @@
-SOURCES=plateau.c gounki.c pion.c liste.c
+SOURCES=plateau.c gounki.c pion.c liste.c ia.c
 OBJECTS=$(SOURCES:.c=.o)
 CFLAGS= -Wall -std=c89 -pedantic
 EXECUTABLE=gounki
