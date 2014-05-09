@@ -1,5 +1,8 @@
+#ifndef PION_FILE
+#define PLATEAU_FILE
 #include "pion.h"
 #include <math.h>
+#endif
 
 typedef struct plateau{
 /*	structure du plateau de jeu: un tableau de taill 8x8 de pions */
@@ -133,8 +136,13 @@ void s3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void n3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void e3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void o3 (plateau* p, liste** l, int x, int y, int y2, int taille);
+int plus_de_pion(plateau* p, int joueur);
+/* test si il ne reste qu'un pion à l'adversaire. Si c'est le cas, ses coordonnées sont renvoyées par last
+	int joueur: numéro du tour pour déterminer le joueur
+	return: int 1 (Vrai) 0 (Faux) */
 
-/* Fonctions relatives au liste
+
+/* Fonctions relatives aux listes
 ----------------------------------------------------------------------------------------------------------------------------------------*/
 liste* init_liste(int x, int y);
 /* alloue de l'espace pour une liste dont la valeur est x et y et dont le suivant est NULL
@@ -154,8 +162,13 @@ int est_present(liste* l, int x, int y);
 	liste* l: liste à tester
 	return: int: 1 (Vrai) 0 (Faux) */
 int est_present2(liste* l, int joueur);
+/*	test si 0 ou 8 (selon le joueur) est dans la liste
+	liste* l: liste à tester
+	return: int: 1 (Vrai) 0 (Faux) */
+int est_present3(liste* l, int y, point* point, int joueur);
 /*	test si y est dans la liste
 	liste* l: liste à tester
+	point* point: point à initialiser si on a trouvé le y
 	return: int: 1 (Vrai) 0 (Faux) */
 liste* concat(liste* l1, liste* l2);
 /*	concaténe deux listes
@@ -165,3 +178,5 @@ void affiche_liste(liste* l);
 /*	affiche la liste
 	liste* l: liste à afficher
 	return void */
+void random_point(liste* l, point** point_1);
+/*	renvoie un point au hasard parmi ceux présent dans la liste */

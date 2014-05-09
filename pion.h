@@ -1,3 +1,4 @@
+#define PION_FILE
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>

@@ -15,10 +15,8 @@ int read_options(int argc, char* argv[]){
 
 			/* recherche du joueur blanc*/
 			if(!strcmp(argv[i],"-B")){
-
 				/* détermine robot ou humain */
 				if((i+1) < argc && !strcmp(argv[i+1],"humain")){
-
 					/* possibilité de personnaliser le nom */
 					if((i+2) < argc && argv[i+2][0] != '-'){
 						joueur_blanc = argv[i+2];	
@@ -26,13 +24,22 @@ int read_options(int argc, char* argv[]){
 				}
 				else{
 					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
-						options |= 1 << OPTION_JOUEURBLANC_ROBOT;
-						/* change le nom en robot */
-						joueur_blanc = "robot";	
+						/* possibilité de choisir le robot */
+						if((i+2) < argc && argv[i+2][0] != '-'){
+							if(!strcmp(argv[i+2],"basique")){
+								options |= 1 << OPTION_JOUEURBLANC_BASIQUE;
+								/* change le nom en robot */
+								joueur_blanc = "robot basique";	
+							}
+						}
+						else{
+							options |= 1 << OPTION_JOUEURBLANC_ROBOT;
+							/* change le nom en robot */
+							joueur_blanc = "robot aléatoire";	
+						}
 					}
 				}
 			}
-		
 			/* recherche du joueur noir*/
 			if(!strcmp(argv[i],"-N")){
 				/* détermine robot ou humain */
@@ -44,9 +51,19 @@ int read_options(int argc, char* argv[]){
 				}
 				else{
 					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
-						options |= 1 << OPTION_JOUEURNOIR_ROBOT;
-						/* change le nom en robot */
-						joueur_noir = "robot";	
+						/* possibilité de choisir le robot */
+						if((i+2) < argc && argv[i+2][0] != '-'){
+							if(!strcmp(argv[i+2],"basique")){
+								options |= 1 << OPTION_JOUEURNOIR_BASIQUE;
+								/* change le nom en robot */
+								joueur_noir = "robot basique";	
+							}
+						}
+						else{
+							options |= 1 << OPTION_JOUEURNOIR_ROBOT;
+							/* change le nom en robot */
+							joueur_noir = "robot aléatoire";	
+						}
 					}
 				}
 			}
@@ -55,6 +72,47 @@ int read_options(int argc, char* argv[]){
 	}
 	return options;
 }
+
+int trans_options(int options){
+	/* Robot aléatoire blanc contre humain noir
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}
+	Robot basique blanc contre humain noir
+	if(options & (1 << OPTION_JOUEURBLANC_BASIQUE)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}
+	Robot aléatoire noir contre humain blanc
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}*/
+	/* on va suivre la règle suivante:
+	   0 = Humain blanc vs Humain noir
+	   1 = Aléatoire blanc vs Humain noir
+	   2 = Basique blanc vs Humain noir
+	   3 = Humain blanc vs Aléatoire noir
+	   4 = Aléatoire blanc vs Aléatoire noir
+	   5 = Basique blanc vs Aléatoire noir
+	   6 = Humain blanc vs Basique noir
+	   7 = Aléatoire blanc vs Basique noir
+	   8 = Basique blanc vs Basique noir */
+	int rep = 0;
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)) rep += 3;
+	return rep;
+}
+
 
 int read_line(point** point_1, point** point_2, point** point_3, point** point_4,  int* type, int* size_line){
 	char* line = NULL;
@@ -87,6 +145,7 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 			(*point_3)->y = 7 - trans_coord(line[7]);
 		}
 		if(length == 12) {
+			printf("coucou");
 			(*point_4)->x = trans_coord(line[9]);
 			(*point_4)->y = 7 - trans_coord(line[10]);
 		}
@@ -110,7 +169,7 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 		return 3;
 	}
 	/* retourne 1 si c'est un déplacement */
-	else{
+	else if(line[2] == '-'){
 		(*point_1)->x = trans_coord(line[0]);
 		(*point_1)->y = 7 - trans_coord(line[1]);
 		(*point_2)->x = trans_coord(line[3]);
@@ -118,10 +177,12 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 		free(line);
 		return 1;
 	}
-	return 0;
+	else{
+		return 0;
+	}
 }
 
-int game_loop(){
+int game_loop(int options){
 	int type, size, c = 0, action, fin;
 	point* point_1 = malloc(sizeof(point));
 	point* point_2 = malloc(sizeof(point));
@@ -132,22 +193,50 @@ int game_loop(){
 	plateau* p = init_plateau();
 	affiche_plateau(p,0);
 
-	while(1){
+	while(!plus_de_pion(p, c)){
 		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+		fflush(stdout);
+
+		if(options){
+			if((options == 1) && (c % 2 == 0)){
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+			else if((options == 1) && (c % 2 == 1)){
+				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+			}
+			else if((options == 2) && (c % 2 == 0)){
+				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+			}
+			else if((options == 2) && (c % 2 == 1)){
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+			else if((options == 3) && (c % 2 == 0)){
+				action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+			else if((options == 3) && (c % 2 == 1)){
+				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+			}
+		}
+		else{
+			action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+		}
+		/* incrémentation du numéro du tour */
 		c++;
 
-		action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
-
 		if(!action){
-			printf("Erreur, recommencez.\n");
+			printf("Erreur: entrée non reconnue.\n");
 			c--;
 		}
 
 		switch(action){
+			/*case 0:
+				fprintf(stderr, "2");
+				fprintf(stdout, "Erreur dans la lecture des coordonnées\n");
+				return 1; break;*/
 			/* cas 1: déplacement standard */
 			case 1:
 				if(!deplacement_possible(p, point_1, point_2, c)){
-					printf("Erreur, recommencez.\n");
+					printf("Erreur: déplacement non reconnu.\n");
 					c--;
 				}
 				else{
@@ -158,7 +247,7 @@ int game_loop(){
 			/* cas 2: déploiement */
 			case 2:
 				if(!deploiement_possible(p, point_1, point_2, point_3, point_4, type, c)){
-					printf("Déploiement non valide.\n");
+					printf("Erreur: déploiement non reconnu.\n");
 					c--;
 				}
 				else{
@@ -170,20 +259,25 @@ int game_loop(){
 			case 3:
 				fin = end_game(p, point_1, c);
 				if(!fin){
-					printf("Erreur, recommencez.\n");
+					printf("Erreur: victoire non reconnue.\n");
 					c--;
 				}
 				else{
-					printf("\nVictoire de %s%s%s  !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+					printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+					free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 					return 0;
 				}
 				break;
+			case  4:
 			case -1:
 				printf("\nFin de partie !\n");
+				free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 				return 0;
 		}
 	}
-	free_plateau(p);
+	printf("\nFin de partie:");
+	printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+	free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 	return 0;	
 }
 
@@ -192,11 +286,8 @@ int main(int argc, char* argv[]){
 
 	/* lecture des options */
 	options = read_options(argc, argv);
-	if(options & (1 << OPTION_TEST)){
-	}
-
 	/* lancement d'une partie */
-	rep = game_loop();
+	rep = game_loop(options);
 	
 	return rep;
 }

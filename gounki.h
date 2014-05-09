@@ -1,9 +1,15 @@
+#ifndef PLATEAU_FILE
+#define GOUNKI_FILE
 #include "plateau.h"
+#include "ia.h"
+#endif
 
 /* Définition des valeurs d'options */
 #define OPTION_TEST 0
-#define OPTION_JOUEURBLANC_ROBOT  1
-#define OPTION_JOUEURNOIR_ROBOT   2
+#define OPTION_JOUEURBLANC_ROBOT 1
+#define OPTION_JOUEURNOIR_ROBOT 2
+#define OPTION_JOUEURBLANC_BASIQUE 3
+#define OPTION_JOUEURNOIR_BASIQUE 4
 
 /* Déclaration des noms des joueurs */
 static char* joueur_blanc = "Player 1";
@@ -22,5 +28,8 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 	int* size_line: longueur de la ligne
 	return: int: 1 pour déplacement, 2 pour déploiement, 3 pour victoire */
 
-int game_loop();
-/* Fonction qui lance une boucle qui déroule le jeu */
+int game_loop(int options);
+/* 	Fonction qui lance une boucle qui déroule le jeu
+	int options: utilisé pour l'ia */
+
+int trans_options(int options);
