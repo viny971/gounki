@@ -113,7 +113,6 @@ int trans_options(int options){
 	return rep;
 }
 
-
 int read_line(point** point_1, point** point_2, point** point_3, point** point_4,  int* type, int* size_line){
 	char* line = NULL;
 	int length;
