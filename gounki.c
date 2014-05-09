@@ -17,7 +17,6 @@ int read_options(int argc, char* argv[]){
 			if(!strcmp(argv[i],"-B")){
 				/* détermine robot ou humain */
 				if((i+1) < argc && !strcmp(argv[i+1],"humain")){
-
 					/* possibilité de personnaliser le nom */
 					if((i+2) < argc && argv[i+2][0] != '-'){
 						joueur_blanc = argv[i+2];	
@@ -25,13 +24,22 @@ int read_options(int argc, char* argv[]){
 				}
 				else{
 					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
-						options |= 1 << OPTION_JOUEURBLANC_ROBOT;
-						/* change le nom en robot */
-						joueur_blanc = "robot";	
+						/* possibilité de choisir le robot */
+						if((i+2) < argc && argv[i+2][0] != '-'){
+							if(!strcmp(argv[i+2],"basique")){
+								options |= 1 << OPTION_JOUEURBLANC_BASIQUE;
+								/* change le nom en robot */
+								joueur_blanc = "robot basique";	
+							}
+						}
+						else{
+							options |= 1 << OPTION_JOUEURBLANC_ROBOT;
+							/* change le nom en robot */
+							joueur_blanc = "robot aléatoire";	
+						}
 					}
 				}
 			}
-		
 			/* recherche du joueur noir*/
 			if(!strcmp(argv[i],"-N")){
 				/* détermine robot ou humain */
@@ -43,9 +51,19 @@ int read_options(int argc, char* argv[]){
 				}
 				else{
 					if((i+1) < argc && !strcmp(argv[i+1],"robot")){
-						options |= 1 << OPTION_JOUEURNOIR_ROBOT;
-						/* change le nom en robot */
-						joueur_noir = "robot";	
+						/* possibilité de choisir le robot */
+						if((i+2) < argc && argv[i+2][0] != '-'){
+							if(!strcmp(argv[i+2],"basique")){
+								options |= 1 << OPTION_JOUEURNOIR_BASIQUE;
+								/* change le nom en robot */
+								joueur_noir = "robot basique";	
+							}
+						}
+						else{
+							options |= 1 << OPTION_JOUEURNOIR_ROBOT;
+							/* change le nom en robot */
+							joueur_noir = "robot aléatoire";	
+						}
 					}
 				}
 			}
@@ -109,7 +127,7 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 		return 3;
 	}
 	/* retourne 1 si c'est un déplacement */
-	else{
+	else if(line[2] == '-'){
 		(*point_1)->x = trans_coord(line[0]);
 		(*point_1)->y = 7 - trans_coord(line[1]);
 		(*point_2)->x = trans_coord(line[3]);
@@ -117,7 +135,9 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 		free(line);
 		return 1;
 	}
-	return 0;
+	else{
+		return 0;
+	}
 }
 
 int game_loop(int options){
@@ -149,7 +169,7 @@ int game_loop(int options){
 				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
 			}
 			else if((options == 3) && (c % 2 == 0)){
-				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
 			}
 			else if((options == 3) && (c % 2 == 1)){
 				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
@@ -162,15 +182,19 @@ int game_loop(int options){
 		c++;
 
 		if(!action){
-			printf("Erreur, recommencez.\n");
+			printf("Erreur: entrée non reconnue.\n");
 			c--;
 		}
 
 		switch(action){
+			/*case 0:
+				fprintf(stderr, "2");
+				fprintf(stdout, "Erreur dans la lecture des coordonnées\n");
+				return 1; break;*/
 			/* cas 1: déplacement standard */
 			case 1:
 				if(!deplacement_possible(p, point_1, point_2, c)){
-					printf("Erreur, recommencez.\n");
+					printf("Erreur: déplacement non reconnu.\n");
 					c--;
 				}
 				else{
@@ -181,7 +205,7 @@ int game_loop(int options){
 			/* cas 2: déploiement */
 			case 2:
 				if(!deploiement_possible(p, point_1, point_2, point_3, point_4, type, c)){
-					printf("Déploiement non valide.\n");
+					printf("Erreur: déploiement non reconnu.\n");
 					c--;
 				}
 				else{
@@ -193,7 +217,7 @@ int game_loop(int options){
 			case 3:
 				fin = end_game(p, point_1, c);
 				if(!fin){
-					printf("Erreur, recommencez.\n");
+					printf("Erreur: victoire non reconnue.\n");
 					c--;
 				}
 				else{
@@ -204,7 +228,7 @@ int game_loop(int options){
 				break;
 			case  4:
 			case -1:
-				printf("\nFin de partie: !\n");
+				printf("\nFin de partie !\n");
 				free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 				return 0;
 		}

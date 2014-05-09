@@ -162,8 +162,13 @@ int est_present(liste* l, int x, int y);
 	liste* l: liste à tester
 	return: int: 1 (Vrai) 0 (Faux) */
 int est_present2(liste* l, int joueur);
+/*	test si 0 ou 8 (selon le joueur) est dans la liste
+	liste* l: liste à tester
+	return: int: 1 (Vrai) 0 (Faux) */
+int est_present3(liste* l, int y, point* point, int joueur);
 /*	test si y est dans la liste
 	liste* l: liste à tester
+	point* point: point à initialiser si on a trouvé le y
 	return: int: 1 (Vrai) 0 (Faux) */
 liste* concat(liste* l1, liste* l2);
 /*	concaténe deux listes

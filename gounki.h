@@ -6,8 +6,10 @@
 
 /* Définition des valeurs d'options */
 #define OPTION_TEST 0
-#define OPTION_JOUEURBLANC_ROBOT  1
-#define OPTION_JOUEURNOIR_ROBOT   2
+#define OPTION_JOUEURBLANC_ROBOT 1
+#define OPTION_JOUEURNOIR_ROBOT 2
+#define OPTION_JOUEURBLANC_BASIQUE 3
+#define OPTION_JOUEURNOIR_BASIQUE 4
 
 /* Déclaration des noms des joueurs */
 static char* joueur_blanc = "Player 1";

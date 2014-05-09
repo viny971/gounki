@@ -64,6 +64,18 @@ int est_present2(liste* l, int joueur){
 	return 0;
 }
 
+int est_present3(liste* l, int y, point* point, int joueur){
+	liste* i = l;
+	for(; i != NULL ; i = i->suivant){
+		if(i->y == y){
+			point->x = i->x;
+			point->y = i->y;
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void random_point(liste* l, point** p1){
 	int r, i;
 	liste* tmp = l;

@@ -5,6 +5,7 @@
 #endif
 
 int ia_random(plateau* p, point** point_1, point** point_2, point** point_3, point** point_4, int* size, int c);
+int ia_basique(plateau* p, point** point_1, point** point_2, point** point_3, point** point_4, int* size, int c);
 void liste_pion(plateau* p, liste** l, int joueur);
 void so4(plateau* p, liste** l, int x, int y, int taille);
 void se4(plateau* p, liste** l, int x, int y, int taille);

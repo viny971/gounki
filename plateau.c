@@ -110,9 +110,9 @@ int trans_coord(char x){
 }
 
 int coord_dans_tab(int x, int y){
-	if(x > 8) return 0;
+	if(x >= 8) return 0;
 	if(x < 0) return 0;
-	if(y > 8) return 0;
+	if(y >= 8) return 0;
 	if(y < 0) return 0;
 	else return 1;
 }
@@ -130,6 +130,10 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	if(p->cell[y1][x1] == NULL){
 		return 0;
 	}
+	/* vérifie qu'on reste dans le tablea */
+	if((!coord_dans_tab(x1,y1)) || (!coord_dans_tab(x2,y2))){
+		return 0;
+	}
 	/* si un des deux cases entrée n'est pas valide */
 	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
 		return 0;
@@ -140,6 +144,10 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	}
 	/* vérifie que c'est bien un pion appartenant au joueur qui a joué */
 	if(p->cell[y1][x1]->couleur == joueur % 2){
+		return 0;
+	}
+	/* vérifie que la somme des tailles ne dépasse pas 3*/
+	if((p->cell[y2][x2] != NULL) && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur) && (p->cell[y1][x1]->taille + p->cell[y2][x2]->taille > 3)){
 		return 0;
 	}
 	else{

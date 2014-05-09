@@ -4,28 +4,59 @@ int ia_basique(plateau* p, point** point_1, point** point_2, point** point_3, po
 	/* initialisation d'une liste de tous les pions restants du robot */
 	liste* l = NULL;
 	liste* l2 = NULL;
-	/*sleep(1);*/
 	liste_pion(p, &l, c);
 	while(1){
+		/* détecte si un pion est proche de la victoire */
+		if(c % 2 == 0){
+			if(est_present3(l, 0, *point_1, c)){
+				if(end_game(p, *point_1, (c+1))){
+					return 3;
+				}
+			}
+		}
+		else if(c % 2 == 1){
+			if(est_present3(l, 7, *point_1, c)){
+				if(end_game(p, *point_1, (c+1))){
+					return 3;
+				}
+			}
+		}
 		/* sélection aléatoire d'un des pions parmi la liste */
 		random_point(l, point_1);
-		/* permet de faire gagner */
+		/* création de la liste des coups envisageables pour ce pion) */
+		deplacements_envisageables(p, &l2, *point_1, c);
 		if(c % 2 == 0){
-			if((*point_1)->y == 0){
-				return 3;
+			if(est_present3(l2, 0, *point_2, c)){
+				if(deplacement_possible(p, *point_1, *point_2, (c+1))){
+					return 1;
+				}
 			}
 		}
 		if(c % 2 == 1){
-			if((*point_1)->y == 7){
-				return 3;
+			if(est_present3(l2, 7, *point_2, c)){
+				if(deplacement_possible(p, *point_1, *point_2, (c+1))){
+					return 1;
+				}
 			}
 		}
-		/* création de la liste des coups envisageables pour ce pion) */
-		deplacements_envisageables(p, &l2, *point_1, c);
-		/*for(; l2 != NULL ; l2 = l2->suivant){
-		(*point_2)->x = l2->x;
-		(*point_2)->y = l2->y;*/
-		random_point(l2, point_2);
+		/* au lieu de choisir aléatoirement, on essaie d'aller le plus loin possible */
+		if(c % 2 == 0){
+			if(!est_present3(l2, ((*point_1)->y) - 3, *point_2, c)){
+				if(!est_present3(l2, ((*point_1)->y) - 2, *point_2, c)){
+					est_present3(l2, ((*point_1)->y) - 1, *point_2, c);
+				}
+			}
+		}
+		if(c % 2 == 1){
+			if(!est_present3(l2, ((*point_1)->y) + 3, *point_2, c)){
+				if(!est_present3(l2, ((*point_1)->y) + 2, *point_2, c)){
+					est_present3(l2, ((*point_1)->y) + 1, *point_2, c);
+				}
+			}
+		}
+		else{
+			random_point(l2, point_2);
+		}
 		if(deplacement_possible(p, *point_1, *point_2, (c+1))){
 			return 1;
 		}
@@ -54,14 +85,11 @@ int ia_random(plateau* p, point** point_1, point** point_2, point** point_3, poi
 		}
 		/* création de la liste des coups envisageables pour ce pion) */
 		deplacements_envisageables(p, &l2, *point_1, c);
-		/*for(; l2 != NULL ; l2 = l2->suivant){
-		  (*point_2)->x = l2->x;
-		  (*point_2)->y = l2->y;*/
+		/* sélection aléatoire d'un des mouvements possibles de la liste */
 		random_point(l2, point_2);
 		if(deplacement_possible(p, *point_1, *point_2, (c+1))){
-			if(deplacement_possible(p, *point_1, *point_2, (c+1))){
-				return 1;
-			}
+			fprintf(stdout,"(%d,%d) -> (%d,%d)", (*point_1)->x, (*point_1)->y, (*point_2)->x, (*point_2)->y);
+			return 1;
 		}
 	}
 	return -1;
@@ -215,7 +243,7 @@ void deplacements_envisageables(plateau* p, liste** l, point* point, int joueur)
 void so4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x - i, y)){ 
+		if(coord_dans_tab(x - i, y + i)){ 
 			append(l, x - i, y + i);
 		}
 	}
@@ -223,7 +251,7 @@ void so4(plateau* p, liste** l, int x, int y, int taille){
 void se4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x + i, y)){ 
+		if(coord_dans_tab(x + i, y + i)){ 
 			append(l, x + i, y + i);
 		}
 	}
@@ -231,7 +259,7 @@ void se4(plateau* p, liste** l, int x, int y, int taille){
 void no4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x - i, y)){ 
+		if(coord_dans_tab(x - i, y - i)){ 
 			append(l, x - i, y - i);
 		}
 	}
@@ -239,7 +267,7 @@ void no4(plateau* p, liste** l, int x, int y, int taille){
 void ne4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x + i, y)){ 
+		if(coord_dans_tab(x + i, y - i)){ 
 			append(l, x + i, y - i);
 		}
 	}
@@ -247,7 +275,7 @@ void ne4(plateau* p, liste** l, int x, int y, int taille){
 void s4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x, y)){ 
+		if(coord_dans_tab(x, y + i)){ 
 			append(l, x, y + i);
 		}
 	}
@@ -256,7 +284,7 @@ void s4(plateau* p, liste** l, int x, int y, int taille){
 void n4(plateau* p, liste** l, int x, int y, int taille){
 	int i;
 	for(i = 1 ; i <= taille ; i++){
-		if(coord_dans_tab(x, y)){ 
+		if(coord_dans_tab(x, y - i)){ 
 			append(l, x, y - i);
 		}
 	}
