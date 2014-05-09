@@ -306,7 +306,7 @@ int game_loop(int options){
 					c--;
 				}
 				else{
-					printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+					printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, ((c+1) % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 					free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 					return 0;
 				}
@@ -319,7 +319,7 @@ int game_loop(int options){
 		}
 	}
 	printf("\nFin de partie:");
-	printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
+	printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, ((c+1) % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 	free_plateau(p); free(point_1); free(point_2); free(point_3); free(point_4);
 	return 0;	
 }

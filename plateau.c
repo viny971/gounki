@@ -150,6 +150,10 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	if((p->cell[y2][x2] != NULL) && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur) && (p->cell[y1][x1]->taille + p->cell[y2][x2]->taille > 3)){
 		return 0;
 	}
+	/* vérifie si c'est un rebond */
+	if(rebond_possible1(p,point_1,point_2)){
+			return 1;
+	}		
 	else{
 		liste* l = init_liste(x1, y1);
 		deplacements_possibles(p, &l, p->cell[y1][x1]->forme, x2, y2, joueur);
@@ -485,7 +489,8 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 
 	if(type == 1) {
 		switch(forme){
-			case 2:
+			case 2:	
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -498,6 +503,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 3:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1) || !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -528,6 +534,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 6:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -545,6 +552,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 9:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -566,6 +574,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 	else if(type == 2) {
 		switch(forme){
 			case 8:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
@@ -578,6 +587,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 12:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,4,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4) || !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -608,6 +618,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 9:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -625,6 +636,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				break;
 
 			case 6:
+				if(rebond_possible2(p,point_1,point_2,point_3,point_4,joueur)) return 1;
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) || !deplacement_possible2(p,x3,y3,x4,y4,1,joueur)
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
@@ -645,7 +657,39 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 	return 1;
 }
 
+
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur){
+	
+ 	point* point_1 = malloc(sizeof(point));
+ 	point* point_2 = malloc(sizeof(point));
+
+	/*if(p->cell[y1][x1] == NULL) return 0;*/
+	
+	if(joueur % 2 != 0){
+		if(y2 > y1) return 0;
+	}
+	else if(joueur % 2 == 0){
+		if(y2 < y1) return 0;
+	}
+	
+	point_1->x = x1;
+	point_1->y = y1;
+	point_2->x = x2;
+	point_2->y = y2;
+
+	if(p->cell[y1][x1] != NULL) {
+		if(rebond_possible1(p,point_1,point_2)){
+			free(point_1);
+			free(point_2);
+			return 1;
+		}		
+	}
+
+	free(point_1);
+	free(point_2);
+
+	if(x1 == x2 && y1 == y2) return 0;
+
 	switch(forme){
 		case 1:
 			if((x1 != x2 && y1 != y2) || fabs(x1-x2) > 1 || fabs(y1-y2) > 1) return 0;
@@ -663,11 +707,11 @@ int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme,
 			break;
 
 		case 8:
-			if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 2) return 0;
+			if((x1 == x2 || y1 == y2) || (fabs(x1-x2) != fabs(y1-y2)) || (fabs(x1-x2) > 2)) return 0;
 			break;
 
 		case 12:
-			if((x1 == x2 || y1 == y2) || fabs(x1-x2) > 3) return 0;
+			if((x1 == x2 || y1 == y2) || (fabs(x1-x2) != fabs(y1-y2)) || (fabs(x1-x2) > 3)) return 0;
 			break;
 
 		case 5:
@@ -1013,4 +1057,114 @@ int plus_de_pion(plateau* p, int joueur){
 		}
 	}
 	return 1;
+}
+
+int rebond_possible1(plateau* p, point* point_1, point* point_2) {
+
+	/*Test si un rebond est possible lors d'un déplacement*/
+
+	int taille, forme;
+	int x1 = point_1->x;
+	int y1 = point_1->y;
+	int x2 = point_2->x;
+	int y2 = point_2->y;
+	taille = p->cell[y1][x1]->taille;
+	forme = p->cell[y1][x1]->forme;
+
+	if(x1 == 0 || x1 == 7) return 0;
+	if(taille == 1 || forme == 5) return 0;
+
+	switch(forme){
+		case 2:
+		case 6:
+			if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2)) return 1;
+			break;
+		case 8:
+		case 9:
+			if((x1 == 1 || x1 == 6) && (x1 == x2 && (y2 == y1+2 || y2 == y1-2))) return 1;
+			/*if(x1 == 1 && x2 == 1 && y2 == y1+2) return 1;
+			else if(x1 == 6 && x2 == 6 && y2 == y1+2) return 1;*/
+			break;
+		case 12:
+			if((x1 == 1 && (x2 == 2 || x2 == 1) && (y2 == y1+3 || y2 == y1-3 || y2 == y1+2 || y2 == y1-2))
+			|| (x1 == 2 && x2 == 1 && (y2 == y1+3 || y2 == y1-3))
+			|| (x1 == 5 && x2 == 6 && (y2 == y1+3 || y2 == y1-3))
+			|| (x1 == 6 && (x2 == 5 || x2 == 6) && (y2 == y1+3 || y2 == y1-3 || y2 == y1+2 || y2 == y1-2))) return 1;
+			break;
+		default:
+			return 0;
+	}		
+
+	return 0;		
+}
+
+int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int joueur){
+
+	/*Test si un rebond es possible lors d'un déplacement*/
+	
+	int forme, taille;
+	int x1 = point_1->x;
+	int y1 = point_1->y;
+	int x2 = point_2->x;
+	int y2 = point_2->y;
+	int x3 = point_3->x;
+	int y3 = point_3->y;
+	int x4 = point_4->x;
+	int y4 = point_4->y;
+
+	taille = p->cell[y1][x1]->taille;
+	forme = p->cell[y1][x1]->forme;
+
+	if(x1 == 0 || x1 == 7) return 0;
+	if(taille == 1 || forme == 5) return 0;
+
+	switch(forme){
+
+		case 2:
+			if(((x1 == 1 && x2 == x1-1 && x3 == x1) || (x1 == 6 && x2 == x1+1 && x3 == x1)) && (y2 == y1 && y3 == y1)) return 1;
+			break;
+		case 3:
+			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && x4 == x1+1)
+			|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
+			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
+			|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
+			&& (y2 == y1 && y3 == y1 && y4 == y1)) return 1;
+			break;
+		case 8:
+			if(((x1 == 1 && x2 == x1-1 && x3 == x1) || (x1 == 6 && x2 == x1+1 && x3 == x1)) 
+			&& ((y2 == y1-1 && y3 == y1-2) || (y2 == y1+1 && y3 == y1+2))) return 1;
+			break;
+		case 12:
+			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && x4 == x1+1)
+			|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
+			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
+			|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
+			&& ((y2 == y1-1 && y3 == y1-2 && y4 == y1-3) || (y2 == y1+1 && y3 == y1+2 && y4 == y1+3))) return 1;
+			break;
+		case 6:
+			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1))
+			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1)))
+			&& ((y2 == y1 && y3 == y1 && y4 == y1-1) || (y2 == y1 && y3 == y1 && y4 == y1+1))) return 1;
+			break;
+		case 9:
+			if(joueur %2 != 0){			
+				if(((((x1 == 1 && x2 == x1-1 && x3 == x1) 
+				&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
+				|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
+				&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
+				&& (y2 == y1-1 && y3 == y1-2)) return 1;
+			}
+			else if(joueur %2 == 0) {
+				if(((((x1 == 1 && x2 == x1-1 && x3 == x1) 
+				&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
+				|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
+				&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
+				&& (y2 == y1+1 && y3 == y1+2)) return 1;
+					
+			}
+			break;
+		default:
+			return 0;
+		}
+	return 0;
 }

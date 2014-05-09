@@ -121,6 +121,10 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	return: void */
 int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme, int joueur);
 
+int rebond_possible1(plateau* p, point* point_1, point* point_2);
+
+int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int joueur);
+
 
 int end_game(plateau* p, point* point, int joueur);
 /*	teste une fin de partie éventuelle

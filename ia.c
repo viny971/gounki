@@ -68,7 +68,6 @@ int ia_random(plateau* p, point** point_1, point** point_2, point** point_3, poi
 	/* initialisation d'une liste de tous les pions restants du robot */
 	liste* l = NULL;
 	liste* l2 = NULL;
-	sleep(1);
 	liste_pion(p, &l, c);
 	while(1){
 		/* sélection aléatoire d'un des pions parmi la liste */
@@ -88,7 +87,6 @@ int ia_random(plateau* p, point** point_1, point** point_2, point** point_3, poi
 		/* sélection aléatoire d'un des mouvements possibles de la liste */
 		random_point(l2, point_2);
 		if(deplacement_possible(p, *point_1, *point_2, (c+1))){
-			fprintf(stdout,"(%d,%d) -> (%d,%d)", (*point_1)->x, (*point_1)->y, (*point_2)->x, (*point_2)->y);
 			return 1;
 		}
 	}
