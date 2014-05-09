@@ -73,6 +73,46 @@ int read_options(int argc, char* argv[]){
 	return options;
 }
 
+int trans_options(int options){
+	/* Robot aléatoire blanc contre humain noir
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}
+	Robot basique blanc contre humain noir
+	if(options & (1 << OPTION_JOUEURBLANC_BASIQUE)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}
+	Robot aléatoire noir contre humain blanc
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+				return 1;
+			}
+		}
+	}*/
+	/* on va suivre la règle suivante:
+	   0 = Humain blanc vs Humain noir
+	   1 = Aléatoire blanc vs Humain noir
+	   2 = Basique blanc vs Humain noir
+	   3 = Humain blanc vs Aléatoire noir
+	   4 = Aléatoire blanc vs Aléatoire noir
+	   5 = Basique blanc vs Aléatoire noir
+	   6 = Humain blanc vs Basique noir
+	   7 = Aléatoire blanc vs Basique noir
+	   8 = Basique blanc vs Basique noir */
+	int rep = 0;
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)) rep += 
+
+}
+
 int read_line(point** point_1, point** point_2, point** point_3, point** point_4,  int* type, int* size_line){
 	char* line = NULL;
 	int length;
@@ -244,20 +284,6 @@ int main(int argc, char* argv[]){
 
 	/* lecture des options */
 	options = read_options(argc, argv);
-	if((options & (1 << OPTION_JOUEURBLANC_ROBOT))){
-		if((options & (1 << OPTION_JOUEURNOIR_ROBOT))){
-			options = 3;
-		}
-	}
-	else if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
-		options = 1;
-	}
-	else if(options & (1 << OPTION_JOUEURNOIR_ROBOT)){
-		options = 2;
-	}
-	else{
-		options = 0;
-	}
 	/* lancement d'une partie */
 	rep = game_loop(options);
 	
