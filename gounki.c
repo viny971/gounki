@@ -12,7 +12,6 @@ int read_options(int argc, char* argv[]){
 			if(!strcmp(argv[i],"-t")){
 				options |= 1 << OPTION_TEST;
 			}
-
 			/* recherche du joueur blanc*/
 			if(!strcmp(argv[i],"-B")){
 				/* détermine robot ou humain */
@@ -28,14 +27,14 @@ int read_options(int argc, char* argv[]){
 						if((i+2) < argc && argv[i+2][0] != '-'){
 							if(!strcmp(argv[i+2],"basique")){
 								options |= 1 << OPTION_JOUEURBLANC_BASIQUE;
-								/* change le nom en robot */
+								/* change le nom en robot basique */
 								joueur_blanc = "robot basique";	
 							}
-						}
-						else{
-							options |= 1 << OPTION_JOUEURBLANC_ROBOT;
-							/* change le nom en robot */
-							joueur_blanc = "robot aléatoire";	
+							else{
+								options |= 1 << OPTION_JOUEURBLANC_ROBOT;
+								/* change le nom en robot basique */
+								joueur_blanc = "robot aléatoire";	
+							}
 						}
 					}
 				}
@@ -58,11 +57,11 @@ int read_options(int argc, char* argv[]){
 								/* change le nom en robot */
 								joueur_noir = "robot basique";	
 							}
-						}
-						else{
-							options |= 1 << OPTION_JOUEURNOIR_ROBOT;
-							/* change le nom en robot */
-							joueur_noir = "robot aléatoire";	
+							else{
+								options |= 1 << OPTION_JOUEURNOIR_ROBOT;
+								/* change le nom en robot */
+								joueur_noir = "robot aléatoire";	
+							}
 						}
 					}
 				}
@@ -74,30 +73,6 @@ int read_options(int argc, char* argv[]){
 }
 
 int trans_options(int options){
-	/* Robot aléatoire blanc contre humain noir
-	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
-		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
-			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
-				return 1;
-			}
-		}
-	}
-	Robot basique blanc contre humain noir
-	if(options & (1 << OPTION_JOUEURBLANC_BASIQUE)){
-		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
-			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
-				return 1;
-			}
-		}
-	}
-	Robot aléatoire noir contre humain blanc
-	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
-		if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
-			if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
-				return 1;
-			}
-		}
-	}*/
 	/* on va suivre la règle suivante:
 	   0 = Humain blanc vs Humain noir
 	   1 = Aléatoire blanc vs Humain noir
@@ -109,7 +84,31 @@ int trans_options(int options){
 	   7 = Aléatoire blanc vs Basique noir
 	   8 = Basique blanc vs Basique noir */
 	int rep = 0;
-	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)) rep += 3;
+	/* options du joueur blanc: +3 pour un humain, +4 pour un robot aléatoire, +5 pour un robot basique */
+	if(!(options & (1 << OPTION_JOUEURBLANC_ROBOT))){
+		if(!(options & (1 << OPTION_JOUEURBLANC_BASIQUE))){
+	   		rep += 3;
+		}
+	}
+	if(options & (1 << OPTION_JOUEURBLANC_ROBOT)){
+	   	rep += 4;
+	}
+	if(options & (1 << OPTION_JOUEURBLANC_BASIQUE)){ 
+		rep += 5;
+	}
+	/* options du joueur noir: -3 pour un humain, +0 pour un robot aléatoire, +3 pour un robot basique */
+	if(!(options & (1 << OPTION_JOUEURNOIR_ROBOT))){
+		if(!(options & (1 << OPTION_JOUEURNOIR_BASIQUE))){
+	   		rep -= 3;
+		}
+	}
+	/* ligne inutile mais on laisse pour la clarté */
+	if(options & (1 << OPTION_JOUEURNOIR_ROBOT)){
+	   	rep += 0;
+	}
+	if(options & (1 << OPTION_JOUEURNOIR_BASIQUE)){
+	   	rep += 3;
+	}
 	return rep;
 }
 
@@ -194,30 +193,75 @@ int game_loop(int options){
 
 	while(!plus_de_pion(p, c)){
 		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
-		fflush(stdout);
 
-		if(options){
-			if((options == 1) && (c % 2 == 0)){
-				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
-			}
-			else if((options == 1) && (c % 2 == 1)){
+		switch(options){
+			case 0:
 				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
-			}
-			else if((options == 2) && (c % 2 == 0)){
-				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
-			}
-			else if((options == 2) && (c % 2 == 1)){
-				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
-			}
-			else if((options == 3) && (c % 2 == 0)){
-				action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
-			}
-			else if((options == 3) && (c % 2 == 1)){
-				action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
-			}
-		}
-		else{
-			action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+				break;
+			case 1:
+				if(c % 2 == 0){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+				}
+				break;
+			case 2:
+				if(c % 2 == 0){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+				}
+				break;
+			case 3:
+				if(c % 2 == 0){
+					action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+				}
+				else if(c % 2 == 1){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
+			case 4:
+				if(c % 2 == 0){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
+			case 5:
+				if(c % 2 == 0){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
+			case 6:
+				if(c % 2 == 0){
+					action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
+				}
+				else if(c % 2 == 1){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
+			case 7:
+				if(c % 2 == 0){
+					action = ia_random(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
+			case 8:
+				if(c % 2 == 0){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				else if(c % 2 == 1){
+					action = ia_basique(p, &point_1, &point_2, &point_3, &point_4, &size, c);
+				}
+				break;
 		}
 		/* incrémentation du numéro du tour */
 		c++;
@@ -285,6 +329,8 @@ int main(int argc, char* argv[]){
 
 	/* lecture des options */
 	options = read_options(argc, argv);
+	/* transformation des options */
+	options = trans_options(options);
 	/* lancement d'une partie */
 	rep = game_loop(options);
 	

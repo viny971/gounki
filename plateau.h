@@ -24,7 +24,7 @@ typedef struct point{
 } point;
 
 /*	Fonctions relatives au plateau et à ses règles
-----------------------------------------------------------------------------------------------------------------------------------------*/
+---------------------------------------------------------------------------------------------------------------------------------------*/
 plateau* init_plateau();
 /*	initialise un plateau avec des pions
 	return: plateau* */
@@ -143,7 +143,7 @@ int plus_de_pion(plateau* p, int joueur);
 
 
 /* Fonctions relatives aux listes
-----------------------------------------------------------------------------------------------------------------------------------------*/
+---------------------------------------------------------------------------------------------------------------------------------------*/
 liste* init_liste(int x, int y);
 /* alloue de l'espace pour une liste dont la valeur est x et y et dont le suivant est NULL
 	int x,y: valeurs à entrer
