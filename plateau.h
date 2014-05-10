@@ -115,7 +115,7 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 	int type: type de déploiement 1:+ 2:*
 	int joueur: numéro du tour pour déterminer le joueur
 	return: 1:(Vrai) 2:(Faux) */
-void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type);
+void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type, int joueur);
 /*	effectue un deploiement
 	deploiement du point_1 jusqu'au point 4 en passant par les autres points (ou jusqu'au point 2 ou 3 si le deploiement est plus petit) 
 	return: void */

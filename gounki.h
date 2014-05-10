@@ -33,3 +33,13 @@ int game_loop(int options);
 	int options: utilisé pour l'ia */
 
 int trans_options(int options);
+	/* on va suivre la règle suivante:
+	   0 = Humain blanc vs Humain noir
+	   1 = Aléatoire blanc vs Humain noir
+	   2 = Basique blanc vs Humain noir
+	   3 = Humain blanc vs Aléatoire noir
+	   4 = Aléatoire blanc vs Aléatoire noir
+	   5 = Basique blanc vs Aléatoire noir
+	   6 = Humain blanc vs Basique noir
+	   7 = Aléatoire blanc vs Basique noir
+	   8 = Basique blanc vs Basique noir */

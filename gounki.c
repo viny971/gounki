@@ -11,6 +11,7 @@ int read_options(int argc, char* argv[]){
 			/* recherche du mode test */
 			if(!strcmp(argv[i],"-t")){
 				options |= 1 << OPTION_TEST;
+				return options;
 			}
 			/* recherche du joueur blanc*/
 			if(!strcmp(argv[i],"-B")){
@@ -73,17 +74,10 @@ int read_options(int argc, char* argv[]){
 }
 
 int trans_options(int options){
-	/* on va suivre la règle suivante:
-	   0 = Humain blanc vs Humain noir
-	   1 = Aléatoire blanc vs Humain noir
-	   2 = Basique blanc vs Humain noir
-	   3 = Humain blanc vs Aléatoire noir
-	   4 = Aléatoire blanc vs Aléatoire noir
-	   5 = Basique blanc vs Aléatoire noir
-	   6 = Humain blanc vs Basique noir
-	   7 = Aléatoire blanc vs Basique noir
-	   8 = Basique blanc vs Basique noir */
 	int rep = 0;
+	if(options & (1 << OPTION_TEST)){
+		return -1;
+	}
 	/* options du joueur blanc: +3 pour un humain, +4 pour un robot aléatoire, +5 pour un robot basique */
 	if(!(options & (1 << OPTION_JOUEURBLANC_ROBOT))){
 		if(!(options & (1 << OPTION_JOUEURBLANC_BASIQUE))){
@@ -194,6 +188,7 @@ int game_loop(int options){
 		printf("Au tour de %s%s%s > ", (c % 2 == 0) ? PURPLE : GREEN, (c % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);
 
 		switch(options){
+			case -1:
 			case 0:
 				action = read_line(&point_1, &point_2, &point_3, &point_4, &type, &size);
 				break;
@@ -271,15 +266,21 @@ int game_loop(int options){
 		}
 
 		switch(action){
-			/*case 0:
-				fprintf(stderr, "2");
-				fprintf(stdout, "Erreur dans la lecture des coordonnées\n");
-				return 1; break;*/
+			case 0:
+				if(options == -1){
+					fprintf(stderr, "2");
+					fprintf(stdout, "Erreur dans la lecture des coordonnées\n");
+					return 1;
+				}
+				break;
 			/* cas 1: déplacement standard */
 			case 1:
 				if(!deplacement_possible(p, point_1, point_2, c)){
 					printf("Erreur: déplacement non reconnu.\n");
 					c--;
+					if(options == -1){
+						return 2;
+					}
 				}
 				else{
 					deplacement(p, point_1, point_2);
@@ -291,9 +292,12 @@ int game_loop(int options){
 				if(!deploiement_possible(p, point_1, point_2, point_3, point_4, type, c)){
 					printf("Erreur: déploiement non reconnu.\n");
 					c--;
+					if(options == -1){
+						return 3;
+					}
 				}
 				else{
-					deploiement(p, point_1, point_2, point_3, point_4, size, type);
+					deploiement(p, point_1, point_2, point_3, point_4, size, type, c);
 					affiche_plateau(p,c);	    
 				}
 				break;
@@ -303,6 +307,9 @@ int game_loop(int options){
 				if(!fin){
 					printf("Erreur: victoire non reconnue.\n");
 					c--;
+					if(options == -1){
+						return 4;
+					}
 				}
 				else{
 					printf("\nVictoire de %s%s%s !\n", ((c+1) % 2 == 0) ? PURPLE : GREEN, ((c+1) % 2 == 0) ? joueur_blanc : joueur_noir, DEFAULT_COLOR);

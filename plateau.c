@@ -130,7 +130,7 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	if(p->cell[y1][x1] == NULL){
 		return 0;
 	}
-	/* vérifie qu'on reste dans le tablea */
+	/* vérifie qu'on reste dans le tableau */
 	if((!coord_dans_tab(x1,y1)) || (!coord_dans_tab(x2,y2))){
 		return 0;
 	}
@@ -138,16 +138,20 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	if(x1 == -1 || y1 == -1 || x2 == -1 || y2 == -1){
 		return 0;
 	}
-	/* si la case de départ est la même que la case d'arrivée */
-	if(x1 == x2 && y1 == y2){
-		return 0;
-	}
 	/* vérifie que c'est bien un pion appartenant au joueur qui a joué */
 	if(p->cell[y1][x1]->couleur == joueur % 2){
 		return 0;
 	}
+	/* cas du déplacement nul avec un double carré */
+	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 6)){
+		return 1;
+	}
 	/* vérifie que la somme des tailles ne dépasse pas 3*/
 	if((p->cell[y2][x2] != NULL) && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur) && (p->cell[y1][x1]->taille + p->cell[y2][x2]->taille > 3)){
+		return 0;
+	}
+	/* si la case de départ est la même que la case d'arrivée et qu'il n'y a pas eu de rebond */
+	if(x1 == x2 && y1 == y2){
 		return 0;
 	}
 	/* vérifie si c'est un rebond */
@@ -360,6 +364,10 @@ void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, in
 void deplacement(plateau* p, point* point_1, point* point_2){
 	pion* pion;
 	int	x1 = point_1->x; int y1 = point_1->y; int x2 = point_2->x; int y2 = point_2->y; 
+	/* cas du deplacement nul avec un double carré */
+	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 6)){
+		return;
+	}
 	/* la case d'arrivée est un pion ami */
 	if(p->cell[y2][x2] != NULL && (p->cell[y1][x1]->couleur == p->cell[y2][x2]->couleur)){
 		composition(p,x1,y1,x2,y2);
@@ -684,7 +692,7 @@ int deplacement_possible2(plateau* p, int x1, int y1, int x2, int y2, int forme,
 	return 1;
 }
 
-void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type) {
+void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int str_len, int type, int joueur) {
 	int forme, couleur;
 	/* transformation des coordonées pour une utilisation simplifiée */
 	int	x1 = point_1->x;
@@ -702,8 +710,16 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	if(str_len == 9) {
 		if(type == 1){
 			if(forme == 2){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
+				if(rebond_possible2(p, point_1, point_2, point_3, point_4, joueur)){
+					deplacement2(p,x2,y2,1,couleur);
+					p->cell[y1][x1]->forme = 1;
+					p->cell[y1][x1]->taille = 1;
+					return;
+				}
+				else{
+					deplacement2(p,x2,y2,1,couleur);
+					deplacement2(p,x3,y3,1,couleur);
+				}
 			}
 			else if(forme == 5) {
 				deplacement2(p,x2,y2,1,couleur);
@@ -724,14 +740,32 @@ void deploiement(plateau* p, point* point_1, point* point_2, point* point_3, poi
 	else if(str_len == 12) {
 		if(type == 1){
 			if(forme == 3){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-				deplacement2(p,x4,y4,1,couleur);
+				if((x1 == 1 || x1 == 6) && rebond_possible2(p, point_1, point_2, point_3, point_4, joueur)){
+					deplacement2(p,x2,y2,1,couleur);
+					deplacement2(p,x4,y4,1,couleur);
+					p->cell[y1][x1]->forme = 1;
+					p->cell[y1][x1]->taille = 1;
+					return;
+				}
+				else{
+					deplacement2(p,x2,y2,1,couleur);
+					deplacement2(p,x3,y3,1,couleur);
+					deplacement2(p,x4,y4,1,couleur);
+				}
 			}
 			else if(forme == 6){
-				deplacement2(p,x2,y2,1,couleur);
-				deplacement2(p,x3,y3,1,couleur);
-				deplacement2(p,x4,y4,4,couleur);
+				if(rebond_possible2(p, point_1, point_2, point_3, point_4, joueur)){
+					deplacement2(p,x2,y2,1,couleur);
+					deplacement2(p,x4,y4,4,couleur);
+					p->cell[y1][x1]->forme = 1;
+					p->cell[y1][x1]->taille = 1;
+					return;
+				}
+				else{
+					deplacement2(p,x2,y2,1,couleur);
+					deplacement2(p,x3,y3,1,couleur);
+					deplacement2(p,x4,y4,4,couleur);
+				}
 			}
 			else if(forme == 9){
 				deplacement2(p,x2,y2,1,couleur);
