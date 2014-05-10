@@ -54,7 +54,7 @@ int est_present2(liste* l, int joueur){
 	liste* i = l;
 	int y;
 	if(joueur % 2 == 0) y = 8; 
-	else y = 0;
+	else y = -1;
 
 	for(; i != NULL ; i = i->suivant){
 		if(i->y == y){

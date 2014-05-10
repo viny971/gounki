@@ -143,7 +143,6 @@ int read_line(point** point_1, point** point_2, point** point_3, point** point_4
 			(*point_3)->y = 7 - trans_coord(line[7]);
 		}
 		if(length == 12) {
-			printf("coucou");
 			(*point_4)->x = trans_coord(line[9]);
 			(*point_4)->y = 7 - trans_coord(line[10]);
 		}
@@ -298,7 +297,7 @@ int game_loop(int options){
 					affiche_plateau(p,c);	    
 				}
 				break;
-			/* cas 3: victoire (manque fonction de détection de victoire) */
+			/* cas 3: victoire */
 			case 3:
 				fin = end_game(p, point_1, c);
 				if(!fin){

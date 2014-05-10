@@ -272,58 +272,36 @@ void o(plateau* p, liste** l, int x, int y, int x2, int y2, int taille){
 void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, int joueur){
 	/* retourne la liste des positions parcourables par la pièce */
 	/* coordonnées de départ */
-	int x, y;  
+	int x, y, taille;  
 	x = (*l)->x;
 	y = (*l)->y;
+	taille = p->cell[y][x]->taille;
 
 	switch(forme){
 		case 1:
-			if(joueur % 2 == 0){
-				s(p, l, x, y, x2, y2, 1);
-				o(p, l, x, y, x2, y2, 1);
-				e(p, l, x, y, x2, y2, 1);
-			}
-			else{
-				n(p, l, x, y, x2, y2, 1);
-				o(p, l, x, y, x2, y2, 1);
-				e(p, l, x, y, x2, y2, 1);
-			}
-			break;
-
 		case 2:
-			if(joueur % 2 == 0){
-				s(p, l, x, y, x2, y2, 2);
-				o(p, l, x, y, x2, y2, 2);
-				e(p, l, x, y, x2, y2, 2);
-			}
-			else{
-				n(p, l, x, y, x2, y2, 2);
-				o(p, l, x, y, x2, y2, 2);
-				e(p, l, x, y, x2, y2, 2);
-			}
-			break;
-
 		case 3:
 			if(joueur % 2 == 0){
-				s(p, l, x, y, x2, y2, 3);
-				o(p, l, x, y, x2, y2, 3);
-				e(p, l, x, y, x2, y2, 1);
+				s(p, l, x, y, x2, y2, taille);
+				o(p, l, x, y, x2, y2, taille);
+				e(p, l, x, y, x2, y2, taille);
 			}
 			else{
-				n(p, l, x, y, x2, y2, 3);
-				o(p, l, x, y, x2, y2, 3);
-				e(p, l, x, y, x2, y2, 3);
+				n(p, l, x, y, x2, y2, taille);
+				o(p, l, x, y, x2, y2, taille);
+				e(p, l, x, y, x2, y2, taille);
 			}
 			break;
-
 		case 4:
+		case 8:
+		case 12:
 			if(joueur % 2 == 0){
-				se(p, l, x, y, x2, y2, 1);
-				so(p, l, x, y, x2, y2, 1);
+				se(p, l, x, y, x2, y2, taille);
+				so(p, l, x, y, x2, y2, taille);
 			}
 			else{
-				no(p, l, x, y, x2, y2, 1);
-				ne(p, l, x, y, x2, y2, 1);
+				no(p, l, x, y, x2, y2, taille);
+				ne(p, l, x, y, x2, y2, taille);
 			}
 			break;
 
@@ -360,18 +338,6 @@ void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, in
 				e(p, l, x, y, x2, y2, 3);
 			}
 			break;
-
-		case 8:
-			if(joueur % 2 == 0){
-				se(p, l, x, y, x2, y2, 2);
-				so(p, l, x, y, x2, y2, 2);
-			}
-			else{
-				no(p, l, x, y, x2, y2, 2);
-				ne(p, l, x, y, x2, y2, 2);
-			}
-			break;
-
 		case 9:
 			if(joueur % 2 == 0){
 				se(p, l, x, y, x2, y2, 2);
@@ -386,17 +352,6 @@ void deplacements_possibles(plateau* p, liste** l, int forme, int x2, int y2, in
 				n(p, l, x, y, x2, y2, 1);
 				o(p, l, x, y, x2, y2, 1);
 				e(p, l, x, y, x2, y2, 1);
-			}
-			break;
-
-		case 12:
-			if(joueur % 2 == 0){
-				se(p, l, x, y, x2, y2, 3);
-				so(p, l, x, y, x2, y2, 3);
-			}
-			else{
-				no(p, l, x, y, x2, y2, 3);
-				ne(p, l, x, y, x2, y2, 3);
 			}
 			break;
 	}
@@ -811,7 +766,12 @@ int end_game(plateau* p, point* point_1, int joueur){
 	liste* l;
 	l = init_liste(x, y);
 	rep = 0;
-
+	if(p->cell[y][x] == NULL){
+		return 0;
+	}
+	if(deploiement_possible2(p, point_1, 1, joueur) || deploiement_possible2(p, point_1, 2, joueur)){
+		return 1;
+	}
 	switch(p->cell[y][x]->forme){
 		case 1:
 			if(joueur % 2 == 0){
@@ -820,9 +780,9 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 1);
 			}
 			else{
-				n3(p, &l, x, y, 0, 1);
-				o3(p, &l, x, y, 0, 1);
-				e3(p, &l, x, y, 0, 1);
+				n3(p, &l, x, y, -1, 1);
+				o3(p, &l, x, y, -1, 1);
+				e3(p, &l, x, y, -1, 1);
 			}
 			break;
 
@@ -833,9 +793,9 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 2);
 			}
 			else{
-				n3(p, &l, x, y, 0, 3);
-				o3(p, &l, x, y, 0, 3);
-				e3(p, &l, x, y, 0, 3);
+				n3(p, &l, x, y, -1, 2);
+				o3(p, &l, x, y, -1, 2);
+				e3(p, &l, x, y, -1, 2);
 			}
 			break;
 
@@ -846,9 +806,9 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 3);
 			}
 			else{
-				n3(p, &l, x, y, 0, 3);
-				o3(p, &l, x, y, 0, 3);
-				e3(p, &l, x, y, 0, 3);
+				n3(p, &l, x, y, -1, 3);
+				o3(p, &l, x, y, -1, 3);
+				e3(p, &l, x, y, -1, 3);
 			}
 			break;
 
@@ -858,8 +818,8 @@ int end_game(plateau* p, point* point_1, int joueur){
 				so3(p, &l, x, y, 8, 1);
 			}
 			else{
-				no3(p, &l, x, y, 0, 1);
-				ne3(p, &l, x, y, 0, 1);
+				no3(p, &l, x, y, -1, 1);
+				ne3(p, &l, x, y, -1, 1);
 			}
 			break;
 
@@ -872,11 +832,11 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 1);
 			}
 			else{
-				no3(p, &l, x, y, 0, 1);
-				ne3(p, &l, x, y, 0, 1);
-				n3(p, &l, x, y, 0, 1);
-				o3(p, &l, x, y, 0, 1);
-				e3(p, &l, x, y, 0, 1);
+				no3(p, &l, x, y, -1, 1);
+				ne3(p, &l, x, y, -1, 1);
+				n3(p, &l, x, y, -1, 1);
+				o3(p, &l, x, y, -1, 1);
+				e3(p, &l, x, y, -1, 1);
 			}
 			break;
 
@@ -889,11 +849,11 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 2);
 			}
 			else{
-				no3(p, &l, x, y, 0, 1);
-				ne3(p, &l, x, y, 0, 1);
-				n3(p, &l, x, y, 0, 3);
-				o3(p, &l, x, y, 0, 3);
-				e3(p, &l, x, y, 0, 3);
+				no3(p, &l, x, y, -1, 1);
+				ne3(p, &l, x, y, -1, 1);
+				n3(p, &l, x, y, -1, 3);
+				o3(p, &l, x, y, -1, 3);
+				e3(p, &l, x, y, -1, 3);
 			}
 			break;
 
@@ -903,8 +863,8 @@ int end_game(plateau* p, point* point_1, int joueur){
 				so3(p, &l, x, y, 8, 2);
 			}
 			else{
-				no3(p, &l, x, y, 0, 2);
-				ne3(p, &l, x, y, 0, 2);
+				no3(p, &l, x, y, -1, 2);
+				ne3(p, &l, x, y, -1, 2);
 			}
 			break;
 
@@ -917,11 +877,11 @@ int end_game(plateau* p, point* point_1, int joueur){
 				e3(p, &l, x, y, 8, 1);
 			}
 			else{
-				no3(p, &l, x, y, 0, 2);
-				ne3(p, &l, x, y, 0, 2);
-				n3(p, &l, x, y, 0, 1);
-				o3(p, &l, x, y, 0, 1);
-				e3(p, &l, x, y, 0, 1);
+				no3(p, &l, x, y, -1, 2);
+				ne3(p, &l, x, y, -1, 2);
+				n3(p, &l, x, y, -1, 1);
+				o3(p, &l, x, y, -1, 1);
+				e3(p, &l, x, y, -1, 1);
 			}
 			break;
 
@@ -931,8 +891,8 @@ int end_game(plateau* p, point* point_1, int joueur){
 				so3(p, &l, x, y, 8, 3);
 			}
 			else{
-				no3(p, &l, x, y, 0, 3);
-				ne3(p, &l, x, y, 0, 3);
+				no3(p, &l, x, y, -1, 3);
+				ne3(p, &l, x, y, -1, 3);
 			}
 			break;
 	}
@@ -1099,9 +1059,7 @@ int rebond_possible1(plateau* p, point* point_1, point* point_2) {
 }
 
 int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3, point* point_4, int joueur){
-
-	/*Test si un rebond es possible lors d'un déplacement*/
-	
+	/*Test si un rebond est possible lors d'un déplacement*/
 	int forme, taille;
 	int x1 = point_1->x;
 	int y1 = point_1->y;
@@ -1119,52 +1077,427 @@ int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3,
 	if(taille == 1 || forme == 5) return 0;
 
 	switch(forme){
-
 		case 2:
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1) || (x1 == 6 && x2 == x1+1 && x3 == x1)) && (y2 == y1 && y3 == y1)) return 1;
 			break;
 		case 3:
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && x4 == x1+1)
-			|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
-			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
-			|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
-			&& (y2 == y1 && y3 == y1 && y4 == y1)) return 1;
+						|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
+						|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
+						|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
+					&& (y2 == y1 && y3 == y1 && y4 == y1)) return 1;
 			break;
 		case 8:
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1) || (x1 == 6 && x2 == x1+1 && x3 == x1)) 
-			&& ((y2 == y1-1 && y3 == y1-2) || (y2 == y1+1 && y3 == y1+2))) return 1;
+					&& ((y2 == y1-1 && y3 == y1-2) || (y2 == y1+1 && y3 == y1+2))) return 1;
 			break;
 		case 12:
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && x4 == x1+1)
-			|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
-			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
-			|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
-			&& ((y2 == y1-1 && y3 == y1-2 && y4 == y1-3) || (y2 == y1+1 && y3 == y1+2 && y4 == y1+3))) return 1;
+						|| (x1 == 2 && x2 == x1-1 && x3 == x1-2 && x4 == x1-1)
+						|| (x1 == 6 && x2 == x1+1 && x3 == x1 && x4 == x1-1)
+						|| (x1 == 5 && x2 == x1+1 && x3 == x1+2 && x4 == x1+1))
+					&& ((y2 == y1-1 && y3 == y1-2 && y4 == y1-3) || (y2 == y1+1 && y3 == y1+2 && y4 == y1+3))) return 1;
 			break;
 		case 6:
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1))
-			|| (x1 == 6 && x2 == x1+1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1)))
-			&& ((y2 == y1 && y3 == y1 && y4 == y1-1) || (y2 == y1 && y3 == y1 && y4 == y1+1))) return 1;
+						|| (x1 == 6 && x2 == x1+1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1)))
+					&& ((y2 == y1 && y3 == y1 && y4 == y1-1) || (y2 == y1 && y3 == y1 && y4 == y1+1))) return 1;
 			break;
 		case 9:
 			if(joueur %2 != 0){			
 				if(((((x1 == 1 && x2 == x1-1 && x3 == x1) 
-				&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
-				|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
-				&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
-				&& (y2 == y1-1 && y3 == y1-2)) return 1;
+									&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
+							|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
+								&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
+						&& (y2 == y1-1 && y3 == y1-2)) return 1;
 			}
 			else if(joueur %2 == 0) {
 				if(((((x1 == 1 && x2 == x1-1 && x3 == x1) 
-				&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
-				|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
-				&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
-				&& (y2 == y1+1 && y3 == y1+2)) return 1;
-					
+									&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
+							|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
+								&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
+						&& (y2 == y1+1 && y3 == y1+2)) return 1;
+
 			}
 			break;
 		default:
 			return 0;
-		}
+	}
 	return 0;
+}
+
+int deploiement_possible2(plateau* p, point* point_1, int type, int joueur) {
+	int forme, rep, couleur;
+	liste* l = NULL;
+	liste* tmp = NULL;
+	/* transformation des coordonnées pour une utilisation simplifiée */
+	int x = point_1->x;
+	int	y = point_1->y;
+
+	if(p->cell[y][x] == NULL) return 0;
+	else{
+	   	forme = p->cell[y][x]->forme;
+	   	couleur = p->cell[y][x]->couleur;
+	}
+
+	/* type 1 est + */
+	if(type == 1) {
+		switch(forme){
+			case 2:
+				if(joueur % 2 == 0){
+					s_dep(p, &l, x, y, 8, couleur, 2);
+					o_dep(p, &l, x, y, 8, couleur, 2);
+					e_dep(p, &l, x, y, 8, couleur, 2);
+				}
+				else{
+					n_dep(p, &l, x, y, -1, couleur, 2);
+					o_dep(p, &l, x, y, -1, couleur, 2);
+					e_dep(p, &l, x, y, -1, couleur, 2);
+				}
+				break;
+			case 3:
+				if(joueur % 2 == 0){
+					s_dep(p, &l, x, y, 8, couleur, 3);
+					o_dep(p, &l, x, y, 8, couleur, 3);
+					e_dep(p, &l, x, y, 8, couleur, 3);
+				}
+				else{
+					n_dep(p, &l, x, y, -1, couleur, 3);
+					o_dep(p, &l, x, y, -1, couleur, 3);
+					e_dep(p, &l, x, y, -1, couleur, 3);
+				}
+				break;
+			case 5:
+				if(joueur % 2 == 0){
+					s_dep(p, &l, x, y, 8, couleur, 1);
+					o_dep(p, &l, x, y, 8, couleur, 1);
+					e_dep(p, &l, x, y, 8, couleur, 1);
+
+					s_dep(p, &tmp, x, y, 8, couleur, 1);
+					o_dep(p, &tmp, x, y, 8, couleur, 1);
+					e_dep(p, &tmp, x, y, 8, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						se_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						so_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+					}
+				}
+				else{
+					n_dep(p, &l, x, y, -1, couleur, 1);
+					o_dep(p, &l, x, y, -1, couleur, 1);
+					e_dep(p, &l, x, y, -1, couleur, 1);
+
+					n_dep(p, &tmp, x, y, -1, couleur, 1);
+					o_dep(p, &tmp, x, y, -1, couleur, 1);
+					e_dep(p, &tmp, x, y, -1, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						no_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						ne_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+					}
+				}	
+			case 6:
+				if(joueur % 2 == 0){
+					s_dep(p, &l, x, y, 8, couleur, 2);
+					o_dep(p, &l, x, y, 8, couleur, 2);
+					e_dep(p, &l, x, y, 8, couleur, 2);
+
+					s_dep(p, &tmp, x, y, 8, couleur, 2);
+					o_dep(p, &tmp, x, y, 8, couleur, 2);
+					e_dep(p, &tmp, x, y, 8, couleur, 2);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						se_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						so_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+					}
+				}
+				else{
+					n_dep(p, &l, x, y, -1, couleur, 2);
+					o_dep(p, &l, x, y, -1, couleur, 2);
+					e_dep(p, &l, x, y, -1, couleur, 2);
+
+					n_dep(p, &tmp, x, y, -1, couleur, 2);
+					o_dep(p, &tmp, x, y, -1, couleur, 2);
+					e_dep(p, &tmp, x, y, -1, couleur, 2);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						no_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						ne_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+					}
+				}	
+			case 9:
+				if(joueur % 2 == 0){
+					s_dep(p, &l, x, y, 8, couleur, 1);
+					o_dep(p, &l, x, y, 8, couleur, 1);
+					e_dep(p, &l, x, y, 8, couleur, 1);
+
+					s_dep(p, &tmp, x, y, 8, couleur, 1);
+					o_dep(p, &tmp, x, y, 8, couleur, 1);
+					e_dep(p, &tmp, x, y, 8, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						se_dep(p, &l, tmp->x, tmp->y, 8, couleur, 2);
+						so_dep(p, &l, tmp->x, tmp->y, 8, couleur, 2);
+					}
+				}
+				else{
+					n_dep(p, &l, x, y, -1, couleur, 1);
+					o_dep(p, &l, x, y, -1, couleur, 1);
+					e_dep(p, &l, x, y, -1, couleur, 1);
+
+					n_dep(p, &tmp, x, y, -1, couleur, 1);
+					o_dep(p, &tmp, x, y, -1, couleur, 1);
+					e_dep(p, &tmp, x, y, -1, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						no_dep(p, &l, tmp->x, tmp->y, -1, couleur, 2);
+						ne_dep(p, &l, tmp->x, tmp->y, -1, couleur, 2);
+					}
+				}
+		}
+	}
+
+	/* type 2 est * */
+	else if(type == 2){
+		switch(forme){
+			case 5:
+				if(joueur % 2 == 0){
+					se_dep(p, &l, x, y, 8, couleur, 1);
+					so_dep(p, &l, x, y, 8, couleur, 1);
+
+					se_dep(p, &tmp, x, y, 8, couleur, 1);
+					so_dep(p, &tmp, x, y, 8, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						s_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						o_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						e_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+					}
+				}
+				else{
+					no_dep(p, &l, x, y, -1, couleur, 1);
+					ne_dep(p, &l, x, y, -1, couleur, 1);
+
+					no_dep(p, &tmp, x, y, -1, couleur, 1);
+					ne_dep(p, &tmp, x, y, -1, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						n_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						o_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						e_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+					}
+				}	
+			case 6:
+				if(joueur % 2 == 0){
+					se_dep(p, &l, x, y, 8, couleur, 1);
+					so_dep(p, &l, x, y, 8, couleur, 1);
+
+					se_dep(p, &tmp, x, y, 8, couleur, 1);
+					so_dep(p, &tmp, x, y, 8, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						s_dep(p, &l, tmp->x, tmp->y, 8, couleur, 2);
+						o_dep(p, &l, tmp->x, tmp->y, 8, couleur, 2);
+						e_dep(p, &l, tmp->x, tmp->y, 8, couleur, 2);
+					}
+				}
+				else{
+					no_dep(p, &l, x, y, -1, couleur, 1);
+					ne_dep(p, &l, x, y, -1, couleur, 1);
+
+					no_dep(p, &tmp, x, y, -1, couleur, 1);
+					ne_dep(p, &tmp, x, y, -1, couleur, 1);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						n_dep(p, &l, tmp->x, tmp->y, -1, couleur, 2);
+						o_dep(p, &l, tmp->x, tmp->y, -1, couleur, 2);
+						e_dep(p, &l, tmp->x, tmp->y, -1, couleur, 2);
+					}
+				}	
+			case 8:
+				if(joueur % 2 == 0){
+					se_dep(p, &l, x, y, 8, couleur, 2);
+					so_dep(p, &l, x, y, 8, couleur, 2);
+				}
+				else{
+					no_dep(p, &l, x, y, -1, couleur, 2);
+					ne_dep(p, &l, x, y, -1, couleur, 2);
+				}	
+			case 9:
+				if(joueur % 2 == 0){
+					se_dep(p, &l, x, y, 8, couleur, 2);
+					so_dep(p, &l, x, y, 8, couleur, 2);
+
+					se_dep(p, &tmp, x, y, 8, couleur, 2);
+					so_dep(p, &tmp, x, y, 8, couleur, 2);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						s_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						o_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+						e_dep(p, &l, tmp->x, tmp->y, 8, couleur, 1);
+					}
+				}
+				else{
+					no_dep(p, &l, x, y, -1, couleur, 2);
+					ne_dep(p, &l, x, y, -1, couleur, 2);
+
+					no_dep(p, &tmp, x, y, -1, couleur, 2);
+					ne_dep(p, &tmp, x, y, -1, couleur, 2);
+
+					for(; tmp != NULL ; tmp = tmp->suivant){
+						n_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						o_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+						e_dep(p, &l, tmp->x, tmp->y, -1, couleur, 1);
+					}
+				}	
+			case 12:
+				if(joueur % 2 == 0){
+					se_dep(p, &l, x, y, 8, couleur, 3);
+					so_dep(p, &l, x, y, 8, couleur, 3);
+				}
+				else{
+					no_dep(p, &l, x, y, -1, couleur, 3);
+					ne_dep(p, &l, x, y, -1, couleur, 3);
+				}	
+		}	
+	}
+	rep = est_present2(l, joueur);
+	return rep;
+}
+
+void s_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x, y)){ 
+			if((y+i) == y2){
+				append(l, x, y + i);
+				break;
+			}
+			else if((p->cell[y+i][x] == NULL) || ((couleur == p->cell[y+i][x]->couleur) && (p->cell[y+i][x]->taille <= 2))){
+				append(l, x, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void so_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x-i, y)){ 
+			if((y+i) == y2){
+				append(l, x - i, y + i);
+				break;
+			}
+			else if((p->cell[y+i][x-i] == NULL) || ((couleur == p->cell[y+i][x-i]->couleur) && (p->cell[y+i][x-i]->taille <= 2))){
+				append(l, x - i, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void se_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x+i, y)){ 
+			if((y+i) == y2){
+				append(l, x + i, y + i);
+				break;
+			}
+			else if((p->cell[y+i][x+i] == NULL) || ((couleur == p->cell[y+i][x+i]->couleur) && (p->cell[y+i][x+i]->taille <= 2))){
+				append(l, x + i, y + i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void n_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x, y)){ 
+			if((y-i) == y2){
+				append(l, x, y - i);
+				break;
+			}
+			else if((p->cell[y-i][x] == NULL) || ((couleur == p->cell[y-i][x]->couleur) && (p->cell[y-i][x]->taille <= 2))){
+				append(l, x, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void no_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x-i, y)){ 
+			if((y-i) == y2){
+				append(l, x - i, y - i);
+				break;
+			}
+			else if((p->cell[y-i][x-i] == NULL) || ((couleur == p->cell[y-i][x-i]->couleur) && (p->cell[y-i][x-i]->taille <= 2))){
+				append(l, x - i, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void ne_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x+i, y)){ 
+			if((y-i) == y2){
+				append(l, x + i, y - i);
+				break;
+			}
+			else if((p->cell[y-i][x+i] == NULL) || ((couleur == p->cell[y-i][x+i]->couleur) && (p->cell[y-i][x+i]->taille <= 2))){
+				append(l, x + i, y - i);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void o_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x-i, y)){ 
+			if(y == y2){
+				append(l, x - i, y);
+				break;
+			}
+			else if((p->cell[y][x-i] == NULL) || ((couleur == p->cell[y][x-i]->couleur) && (p->cell[y][x-i]->taille <= 2))){
+				append(l, x - i, y);
+			}
+			else{
+				break;
+			}
+		}
+	}
+}
+void e_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille){
+	int i;
+	for(i = 1 ; i <= taille ; i++){
+		if(coord_dans_tab(x+i, y)){ 
+			if(y == y2){
+				append(l, x + i, y);
+				break;
+			}
+			else if((p->cell[y][x+i] == NULL) || ((couleur == p->cell[y][x+i]->couleur) && (p->cell[y][x+i]->taille <= 2))){
+				append(l, x + i, y);
+			}
+			else{
+				break;
+			}
+		}
+	}
 }

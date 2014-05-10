@@ -141,9 +141,20 @@ void n3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void e3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 void o3 (plateau* p, liste** l, int x, int y, int y2, int taille);
 int plus_de_pion(plateau* p, int joueur);
-/* test si il ne reste qu'un pion à l'adversaire. Si c'est le cas, ses coordonnées sont renvoyées par last
+/*	test si il ne reste qu'un pion à l'adversaire. Si c'est le cas, ses coordonnées sont renvoyées par last
 	int joueur: numéro du tour pour déterminer le joueur
 	return: int 1 (Vrai) 0 (Faux) */
+
+int deploiement_possible2(plateau* p, point* point_1, int type, int joueur);
+/*	deploiement adapté à la détection de la victoire */
+void s_dep (plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void so_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void se_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void n_dep (plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void no_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void ne_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void o_dep (plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
+void e_dep (plateau* p, liste** l, int x, int y, int y2, int couleur, int taille);
 
 
 /* Fonctions relatives aux listes
