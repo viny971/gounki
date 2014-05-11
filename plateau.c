@@ -142,8 +142,8 @@ int deplacement_possible(plateau* p, point* point_1, point* point_2, int joueur)
 	if(p->cell[y1][x1]->couleur == joueur % 2){
 		return 0;
 	}
-	/* cas du déplacement nul avec un double carré */
-	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 6)){
+	/* cas du déplacement nul avec un double/triple carré */
+	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 3 || p->cell[y1][x1]->forme == 6)){
 		return 1;
 	}
 	/* vérifie que la somme des tailles ne dépasse pas 3*/
@@ -365,7 +365,7 @@ void deplacement(plateau* p, point* point_1, point* point_2){
 	pion* pion;
 	int	x1 = point_1->x; int y1 = point_1->y; int x2 = point_2->x; int y2 = point_2->y; 
 	/* cas du deplacement nul avec un double carré */
-	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 6)){
+	if((x1 == 1 || x1 == 6) && (x1 == x2 && y1 == y2) && (p->cell[y1][x1]->forme == 2 || p->cell[y1][x1]->forme == 3 || p->cell[y1][x1]->forme == 6)){
 		return;
 	}
 	/* la case d'arrivée est un pion ami */
@@ -457,11 +457,11 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -471,15 +471,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1) || !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -487,11 +487,11 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				if(!deplacement_possible2(p,x1,y1,x2,y2,1,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 
 				break;
@@ -502,15 +502,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y4][x4] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -520,15 +520,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y4][x4] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 		}	
@@ -541,11 +541,11 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,4,joueur) ||!meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -555,15 +555,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4) || !meme_sens(x2,y2,x3,y3,x4,y4,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y4][x4] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -571,11 +571,11 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 				if(!deplacement_possible2(p,x1,y1,x2,y2,4,joueur) || !deplacement_possible2(p,x2,y2,x3,y3,1,joueur)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 
 				break;
@@ -586,15 +586,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x1,y1,x2,y2,x3,y3,4)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y4][x4] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 
@@ -604,15 +604,15 @@ int deploiement_possible(plateau* p, point* point_1, point* point_2, point* poin
 						|| !meme_sens(x2,y2,x3,y3,x4,y4,1)) return 0;
 				if(p->cell[y2][x2] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y2][x2]->couleur) return 0;
-					if(p->cell[y2][x2]->taille + 1 > 2) return 0;
+					if(p->cell[y2][x2]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y3][x3] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y3][x3]->couleur) return 0;
-					if(p->cell[y3][x3]->taille + 1 > 2) return 0;
+					if(p->cell[y3][x3]->taille + 1 > 3) return 0;
 				}
 				if(p->cell[y4][x4] != NULL){
 					if(p->cell[y1][x1]->couleur != p->cell[y4][x4]->couleur) return 0;
-					if(p->cell[y4][x4]->taille + 1 > 2) return 0;
+					if(p->cell[y4][x4]->taille + 1 > 3) return 0;
 				}
 				break;
 		}	
@@ -1107,7 +1107,6 @@ int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3,
 	taille = p->cell[y1][x1]->taille;
 	forme = p->cell[y1][x1]->forme;
 
-	if(x1 == 0 || x1 == 7) return 0;
 	if(taille == 1 || forme == 5) return 0;
 
 	switch(forme){
@@ -1136,6 +1135,14 @@ int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3,
 			if(((x1 == 1 && x2 == x1-1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1))
 						|| (x1 == 6 && x2 == x1+1 && x3 == x1 && (x4 == x1-1 || x4 == x1+1)))
 					&& ((y2 == y1 && y3 == y1 && y4 == y1-1) || (y2 == y1 && y3 == y1 && y4 == y1+1))) return 1;
+			if((x1 == 0 || x1 == 2) && (x2 == 1 && x3 == 0 && x4 == 1) && (y2 == y1 - 1 && y3 == y1 - 1 && y4 == y1 - 1)) return 1;
+			if((x1 == 5 || x1 == 7) && (x2 == 6 && x3 == 7 && x4 == 6) && (y2 == y1 - 1 && y3 == y1 - 1 && y4 == y1 - 1)) return 1;
+			if((x1 == 0 || x1 == 2) && (x2 == 1 && x3 == 0 && x4 == 1) && (y2 == y1 + 1 && y3 == y1 + 1 && y4 == y1 + 1)) return 1;
+			if((x1 == 5 || x1 == 7) && (x2 == 6 && x3 == 7 && x4 == 6) && (y2 == y1 + 1 && y3 == y1 + 1 && y4 == y1 + 1)) return 1;
+			if(x1 == 1 && x2 == 0 && x3 == 1 && x4 == 2 && y2 == y1 - 1 && y3 == y1 - 1 && y4 == y1 - 1) return 1;
+			if(x1 == 6 && x2 == 7 && x3 == 6 && x4 == 5 && y2 == y1 - 1 && y3 == y1 - 1 && y4 == y1 - 1) return 1;
+			if(x1 == 1 && x2 == 0 && x3 == 1 && x4 == 2 && y2 == y1 + 1 && y3 == y1 + 1 && y4 == y1 + 1) return 1;
+			if(x1 == 6 && x2 == 7 && x3 == 6 && x4 == 5 && y2 == y1 + 1 && y3 == y1 + 1 && y4 == y1 + 1) return 1;
 			break;
 		case 9:
 			if(joueur %2 != 0){			
@@ -1144,6 +1151,10 @@ int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3,
 							|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
 								&& ((x4==x1 && y4==y1-3) || (((x4==x1-1 || x4==x1+1) && y4==y1-2)))))
 						&& (y2 == y1-1 && y3 == y1-2)) return 1;
+				if(x1 == 1 && x2 == 1 && x3 == 0 && x4 == 1 && y2 == y1 - 1 && y3 == y1 - 2 && y4 == y1 - 3) return 1;
+				if((x1 == 0 || x1 == 2) && x2 == 1 && x3 == 0 && x4 == 1 && y2 == y1 && y3 == y1 - 1 && y4 == y1 - 2) return 1;
+				if(x1 == 6 && x2 == 6 && x3 == 7 && x4 == 6 && y2 == y1 - 1 && y3 == y1 - 2 && y4 == y1 - 3) return 1;
+				if((x1 == 5 || x1 == 7) && x2 == 6 && x3 == 7 && x4 == 6 && y2 == y1 && y3 == y1 - 1 && y4 == y1 - 2) return 1;
 			}
 			else if(joueur %2 == 0) {
 				if(((((x1 == 1 && x2 == x1-1 && x3 == x1) 
@@ -1151,7 +1162,10 @@ int rebond_possible2(plateau* p, point* point_1, point* point_2, point* point_3,
 							|| ((x1 == 6 && x2 == x1+1 && x3 == x1) 
 								&& ((x4==x1 && y4==y1+3) || (((x4==x1-1 || x4==x1+1) && y4==y1+2)))))
 						&& (y2 == y1+1 && y3 == y1+2)) return 1;
-
+				if(x1 == 1 && x2 == 1 && x3 == 0 && x4 == 1 && y2 == y1 + 1 && y3 == y1 + 2 && y4 == y1 + 3) return 1;
+				if((x1 == 0 || x1 == 2) && x2 == 1 && x3 == 0 && x4 == 1 && y2 == y1 && y3 == y1 + 1 && y4 == y1 + 2) return 1;
+				if(x1 == 6 && x2 == 6 && x3 == 7 && x4 == 6 && y2 == y1 + 1 && y3 == y1 + 2 && y4 == y1 + 3) return 1;
+				if((x1 == 5 || x1 == 7) && x2 == 6 && x3 == 7 && x4 == 6 && y2 == y1 && y3 == y1 + 1 && y4 == y1 + 2) return 1;
 			}
 			break;
 		default:
@@ -1424,6 +1438,10 @@ void so_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille
 				append(l, x - i, y + i);
 				break;
 			}
+			if(x-i == 0 && taille - i > 0){
+				append(l, x - i, y + i);
+				se_dep(p, l, x-i, y + i, y2, couleur, taille - i);
+			}
 			else if((p->cell[y+i][x-i] == NULL) || ((couleur == p->cell[y+i][x-i]->couleur) && (p->cell[y+i][x-i]->taille <= 2))){
 				append(l, x - i, y + i);
 			}
@@ -1440,6 +1458,10 @@ void se_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille
 			if((y+i) == y2){
 				append(l, x + i, y + i);
 				break;
+			}
+			if(x+i == 7 && taille - i > 0){
+				append(l, x + i, y + i);
+				so_dep(p, l, x+i, y + i, y2, couleur, taille - i);
 			}
 			else if((p->cell[y+i][x+i] == NULL) || ((couleur == p->cell[y+i][x+i]->couleur) && (p->cell[y+i][x+i]->taille <= 2))){
 				append(l, x + i, y + i);
@@ -1475,6 +1497,10 @@ void no_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille
 				append(l, x - i, y - i);
 				break;
 			}
+			if(x-i == 0 && taille - i > 0){
+				append(l, x - i, y - i);
+				ne_dep(p, l, x-i, y - i, y2, couleur, taille - i);
+			}
 			else if((p->cell[y-i][x-i] == NULL) || ((couleur == p->cell[y-i][x-i]->couleur) && (p->cell[y-i][x-i]->taille <= 2))){
 				append(l, x - i, y - i);
 			}
@@ -1491,6 +1517,10 @@ void ne_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille
 			if((y-i) == y2){
 				append(l, x + i, y - i);
 				break;
+			}
+			if(x+i == 7 && taille - i > 0){
+				append(l, x + i, y - i);
+				no_dep(p, l, x+i, y - i, y2, couleur, taille - i);
 			}
 			else if((p->cell[y-i][x+i] == NULL) || ((couleur == p->cell[y-i][x+i]->couleur) && (p->cell[y-i][x+i]->taille <= 2))){
 				append(l, x + i, y - i);
@@ -1509,6 +1539,10 @@ void o_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille)
 				append(l, x - i, y);
 				break;
 			}
+			if(x-i == 0 && taille - i > 0){
+				append(l, x - i, y);
+				e_dep(p, l, x-i, y, y2, couleur, taille - i);
+			}
 			else if((p->cell[y][x-i] == NULL) || ((couleur == p->cell[y][x-i]->couleur) && (p->cell[y][x-i]->taille <= 2))){
 				append(l, x - i, y);
 			}
@@ -1525,6 +1559,10 @@ void e_dep(plateau* p, liste** l, int x, int y, int y2, int couleur, int taille)
 			if(y == y2){
 				append(l, x + i, y);
 				break;
+			}
+			if(x+i == 7 && taille - i > 0){
+				append(l, x + i, y);
+				o_dep(p, l, x+i, y, y2, couleur, taille - i);
 			}
 			else if((p->cell[y][x+i] == NULL) || ((couleur == p->cell[y][x+i]->couleur) && (p->cell[y][x+i]->taille <= 2))){
 				append(l, x + i, y);
